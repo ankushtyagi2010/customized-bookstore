@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Order Details')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a th:href="@{/orders}">My Orders</a>
+                <span>/</span>
+                <span th:text="${order.orderNumber}">Order Details</span>
+            </nav>
+
+            <div class="order-details-container">
+                <div class="order-details-header">
+                    <div>
+                        <h1 th:text="'Order ' + ${order.orderNumber}">Order #123456</h1>
+                        <p class="order-date" th:text="'Placed on ' + ${#temporals.format(order.createdAt, 'MMMM dd, yyyy')}">
+                            Placed on January 01, 2024
+                        </p>
+                    </div>
+                    <div class="order-status">
+                        <span class="status-badge large"
+                              th:classappend="${order.status.name()}"
+                              th:text="${order.status}">PENDING</span>
+                    </div>
+                </div>
+
+                <div class="order-details-grid">
+                    <!-- Order Items -->
+                    <div class="order-section">
+                        <h3>Order Items</h3>
+                        <div class="order-items-list">
+                            <div class="order-item-detail" th:each="item : ${order.items}">
+                                <div class="item-image">
+                                    <img src="/images/default-book.jpg" alt="Book">
+                                </div>
+                                <div class="item-info">
+                                    <h4 th:text="${item.bookTitle}">Book Title</h4>
+                                    <p>Personalized Book</p>
+                                    <p class="item-qty" th:text="'Quantity: ' + ${item.quantity}">Quantity: 1</p>
+                                </div>
+                                <div class="item-prices">
+                                    <span class="unit-price" th:text="'$' + ${item.unitPrice} + ' each'">$24.99 each</span>
+                                    <span class="total-price" th:text="'$' + ${item.totalPrice}">$24.99</span>
+                                </div>
+                                <div class="item-download" th:if="${item.downloadUrl != null}">
+                                    <a th:href="${item.downloadUrl}" class="btn btn-primary btn-sm">
+                                        Download PDF
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="order-section">
+                        <h3>Shipping Address</h3>
+                        <div class="address-card" th:if="${order.shippingAddress != null}">
+                            <p th:text="${order.shippingAddress.fullName}">John Doe</p>
+                            <p th:text="${order.shippingAddress.street}">123 Main Street</p>
+                            <p>
+                                <span th:text="${order.shippingAddress.city}">City</span>,
+                                <span th:text="${order.shippingAddress.state}">State</span>
+                                <span th:text="${order.shippingAddress.zipCode}">12345</span>
+                            </p>
+                            <p th:text="${order.shippingAddress.country}">USA</p>
+                            <p th:if="${order.shippingAddress.phone != null}"
+                               th:text="'Phone: ' + ${order.shippingAddress.phone}">Phone: 555-123-4567</p>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="order-section">
+                        <h3>Order Summary</h3>
+                        <div class="order-summary-details">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span th:text="'$' + ${order.subtotal}">$24.99</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Shipping</span>
+                                <span th:text="${order.shippingCost != null} ? '$' + ${order.shippingCost} : 'FREE'">FREE</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Tax</span>
+                                <span th:text="${order.tax != null} ? '$' + ${order.tax} : '$0.00'">$0.00</span>
+                            </div>
+                            <div class="summary-row total">
+                                <span>Total</span>
+                                <span th:text="'$' + ${order.totalAmount}">$24.99</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Timeline -->
+                    <div class="order-section">
+                        <h3>Order Timeline</h3>
+                        <div class="timeline">
+                            <div class="timeline-item completed">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <p class="timeline-title">Order Placed</p>
+                                    <p class="timeline-date" th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy HH:mm')}">
+                                        Jan 01, 2024
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="timeline-item"
+                                 th:classappend="${order.status.name() != 'PENDING'} ? 'completed' : ''">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <p class="timeline-title">Processing</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item"
+                                 th:classappend="${order.status.name() == 'READY' or order.status.name() == 'SHIPPED' or order.status.name() == 'DELIVERED'} ? 'completed' : ''">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <p class="timeline-title">Ready</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item"
+                                 th:classappend="${order.status.name() == 'DELIVERED'} ? 'completed' : ''">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <p class="timeline-title">Delivered</p>
+                                    <p th:if="${order.completedAt != null}" class="timeline-date"
+                                       th:text="${#temporals.format(order.completedAt, 'MMM dd, yyyy')}">
+                                        Jan 05, 2024
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-actions">
+                    <a th:href="@{/orders}" class="btn btn-outline">Back to Orders</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

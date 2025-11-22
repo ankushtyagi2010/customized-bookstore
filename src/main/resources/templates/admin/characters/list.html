@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Manage Characters')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content admin-layout">
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a th:href="@{/admin}" class="admin-nav-item">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a th:href="@{/admin/books}" class="admin-nav-item">
+                    <span class="nav-icon">📚</span> Book Templates
+                </a>
+                <a th:href="@{/admin/characters}" class="admin-nav-item active">
+                    <span class="nav-icon">🎨</span> Characters
+                </a>
+                <a th:href="@{/admin/orders}" class="admin-nav-item">
+                    <span class="nav-icon">📦</span> Orders
+                </a>
+                <a th:href="@{/admin/users}" class="admin-nav-item">
+                    <span class="nav-icon">👥</span> Users
+                </a>
+            </nav>
+        </aside>
+
+        <div class="admin-content">
+            <div class="admin-header">
+                <h1>Character Images</h1>
+                <a th:href="@{/admin/characters/new}" class="btn btn-primary">Add New Character</a>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+            <div class="character-grid">
+                <div class="character-admin-card" th:each="char : ${characters}">
+                    <div class="character-image">
+                        <img th:src="${char.imageUrl}" th:alt="${char.name}">
+                    </div>
+                    <div class="character-info">
+                        <h4 th:text="${char.name}">Character Name</h4>
+                        <p class="character-category" th:text="${char.category}">Category</p>
+                        <p class="character-style" th:text="${char.style}">Style</p>
+                        <span class="status-badge" th:classappend="${char.active} ? 'active' : 'inactive'"
+                              th:text="${char.active} ? 'Active' : 'Inactive'">Active</span>
+                    </div>
+                    <div class="character-actions">
+                        <a th:href="@{/admin/characters/edit/{id}(id=${char.id})}" class="btn btn-sm btn-outline">Edit</a>
+                        <form th:action="@{/admin/characters/delete/{id}(id=${char.id})}" method="post"
+                              onsubmit="return confirm('Are you sure you want to delete this character?');">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${characters == null or characters.isEmpty()}" class="empty-state">
+                <p>No character images yet. Add some to get started!</p>
+                <a th:href="@{/admin/characters/new}" class="btn btn-primary">Add Character</a>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

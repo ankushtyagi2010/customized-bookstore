@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Manage Books')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content admin-layout">
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a th:href="@{/admin}" class="admin-nav-item">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a th:href="@{/admin/books}" class="admin-nav-item active">
+                    <span class="nav-icon">📚</span> Book Templates
+                </a>
+                <a th:href="@{/admin/characters}" class="admin-nav-item">
+                    <span class="nav-icon">🎨</span> Characters
+                </a>
+                <a th:href="@{/admin/orders}" class="admin-nav-item">
+                    <span class="nav-icon">📦</span> Orders
+                </a>
+                <a th:href="@{/admin/users}" class="admin-nav-item">
+                    <span class="nav-icon">👥</span> Users
+                </a>
+            </nav>
+        </aside>
+
+        <div class="admin-content">
+            <div class="admin-header">
+                <h1>Book Templates</h1>
+                <a th:href="@{/admin/books/new}" class="btn btn-primary">Add New Book</a>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Cover</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Age Group</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Featured</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="book : ${books}">
+                            <td>
+                                <img th:src="${book.coverImageUrl != null} ? ${book.coverImageUrl} : '/images/default-book.jpg'"
+                                     alt="Cover" class="table-thumb">
+                            </td>
+                            <td th:text="${book.title}">Book Title</td>
+                            <td th:text="${book.category}">Category</td>
+                            <td th:text="${book.ageGroup}">3-5</td>
+                            <td th:text="'$' + ${book.basePrice}">$24.99</td>
+                            <td>
+                                <span class="status-badge" th:classappend="${book.active} ? 'active' : 'inactive'"
+                                      th:text="${book.active} ? 'Active' : 'Inactive'">Active</span>
+                            </td>
+                            <td>
+                                <span th:if="${book.featured}" class="badge badge-featured">Featured</span>
+                                <span th:unless="${book.featured}">-</span>
+                            </td>
+                            <td class="table-actions">
+                                <a th:href="@{/admin/books/edit/{id}(id=${book.id})}" class="btn btn-sm btn-outline">Edit</a>
+                                <form th:action="@{/admin/books/toggle-active/{id}(id=${book.id})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm"
+                                            th:text="${book.active} ? 'Deactivate' : 'Activate'">Toggle</button>
+                                </form>
+                                <form th:action="@{/admin/books/toggle-featured/{id}(id=${book.id})}" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-sm"
+                                            th:text="${book.featured} ? 'Unfeature' : 'Feature'">Toggle</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${books == null or books.isEmpty()}" class="empty-state">
+                <p>No book templates yet. Create your first one!</p>
+                <a th:href="@{/admin/books/new}" class="btn btn-primary">Add Book Template</a>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

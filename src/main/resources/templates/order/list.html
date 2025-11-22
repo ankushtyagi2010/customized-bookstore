@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('My Orders')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content">
+        <div class="container">
+            <h1>My Orders</h1>
+
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+            <div th:if="${orders != null and !orders.isEmpty()}" class="orders-list">
+                <div class="order-card" th:each="order : ${orders}">
+                    <div class="order-header">
+                        <div class="order-info">
+                            <span class="order-number" th:text="${order.orderNumber}">ORD-123456</span>
+                            <span class="order-date" th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy')}">Jan 01, 2024</span>
+                        </div>
+                        <div class="order-status">
+                            <span class="status-badge"
+                                  th:classappend="${order.status.name()}"
+                                  th:text="${order.status}">PENDING</span>
+                        </div>
+                    </div>
+
+                    <div class="order-items">
+                        <div class="order-item" th:each="item : ${order.items}">
+                            <div class="item-info">
+                                <span class="item-title" th:text="${item.bookTitle}">Book Title</span>
+                                <span class="item-qty" th:text="'Qty: ' + ${item.quantity}">Qty: 1</span>
+                            </div>
+                            <div class="item-price" th:text="'$' + ${item.totalPrice}">$24.99</div>
+                        </div>
+                    </div>
+
+                    <div class="order-footer">
+                        <div class="order-total">
+                            <span>Total:</span>
+                            <span class="total-amount" th:text="'$' + ${order.totalAmount}">$24.99</span>
+                        </div>
+                        <div class="order-actions">
+                            <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-outline btn-sm">
+                                View Details
+                            </a>
+                            <a th:if="${order.status.name() == 'READY' or order.status.name() == 'DELIVERED'}"
+                               th:each="item : ${order.items}"
+                               th:if="${item.downloadUrl != null}"
+                               th:href="${item.downloadUrl}"
+                               class="btn btn-primary btn-sm">
+                                Download PDF
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${orders == null or orders.isEmpty()}" class="empty-orders">
+                <div class="empty-icon">📋</div>
+                <h2>No orders yet</h2>
+                <p>You haven't placed any orders yet. Start by customizing a book!</p>
+                <a th:href="@{/books}" class="btn btn-primary">Browse Books</a>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

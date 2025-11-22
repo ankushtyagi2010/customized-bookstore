@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Book Catalog')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>Browse Our Books</h1>
+                <p>Choose a story template to personalize for your child</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="filters-section">
+                <form th:action="@{/books}" method="get" class="filters-form">
+                    <div class="filter-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category">
+                            <option value="">All Categories</option>
+                            <option value="adventure" th:selected="${selectedCategory == 'adventure'}">Adventure</option>
+                            <option value="fantasy" th:selected="${selectedCategory == 'fantasy'}">Fantasy</option>
+                            <option value="educational" th:selected="${selectedCategory == 'educational'}">Educational</option>
+                            <option value="bedtime" th:selected="${selectedCategory == 'bedtime'}">Bedtime Stories</option>
+                            <option value="birthday" th:selected="${selectedCategory == 'birthday'}">Birthday</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="ageGroup">Age Group</label>
+                        <select id="ageGroup" name="ageGroup">
+                            <option value="">All Ages</option>
+                            <option value="0-2" th:selected="${selectedAgeGroup == '0-2'}">0-2 years</option>
+                            <option value="3-5" th:selected="${selectedAgeGroup == '3-5'}">3-5 years</option>
+                            <option value="6-8" th:selected="${selectedAgeGroup == '6-8'}">6-8 years</option>
+                            <option value="9-12" th:selected="${selectedAgeGroup == '9-12'}">9-12 years</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <a th:href="@{/books}" class="btn btn-outline">Clear</a>
+                </form>
+            </div>
+
+            <!-- Books Grid -->
+            <div class="books-grid" th:if="${books != null and !books.isEmpty()}">
+                <div class="book-card" th:each="book : ${books}">
+                    <div class="book-image">
+                        <img th:src="${book.coverImageUrl != null} ? ${book.coverImageUrl} : '/images/default-book.jpg'"
+                             th:alt="${book.title}">
+                        <span class="badge badge-featured" th:if="${book.featured}">Featured</span>
+                    </div>
+                    <div class="book-info">
+                        <h3 th:text="${book.title}">Book Title</h3>
+                        <p class="book-category" th:text="${book.category}">Category</p>
+                        <p class="book-description" th:text="${#strings.abbreviate(book.description, 100)}">Description</p>
+                        <div class="book-meta">
+                            <span class="age-group">
+                                <span class="icon">👶</span>
+                                <span th:text="'Ages ' + ${book.ageGroup}">Ages 3-5</span>
+                            </span>
+                            <span class="page-count">
+                                <span class="icon">📄</span>
+                                <span th:text="${book.pageCount} + ' pages'">20 pages</span>
+                            </span>
+                        </div>
+                        <div class="book-footer">
+                            <span class="price" th:text="'$' + ${book.basePrice}">$24.99</span>
+                            <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${books == null or books.isEmpty()}" class="no-results">
+                <div class="no-results-icon">📚</div>
+                <h3>No books found</h3>
+                <p>Try adjusting your filters or check back later for new releases!</p>
+                <a th:href="@{/books}" class="btn btn-primary">View All Books</a>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

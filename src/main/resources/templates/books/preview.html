@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Preview Your Book')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="preview-header">
+                <h1>Preview Your Customized Book</h1>
+                <p th:text="${customizedBook.customTitle != null} ? ${customizedBook.customTitle} : ${template.title}">Book Title</p>
+            </div>
+
+            <!-- Book Preview -->
+            <div class="book-preview-container">
+                <div class="book-flipper">
+                    <!-- Cover -->
+                    <div class="preview-page cover-page active" data-page="0">
+                        <div class="page-content">
+                            <img th:src="${customizedBook.customCoverImageUrl != null} ? ${customizedBook.customCoverImageUrl} : ${template.coverImageUrl}"
+                                 alt="Book Cover" class="cover-image">
+                            <h2 class="preview-title" th:text="${customizedBook.customTitle != null} ? ${customizedBook.customTitle} : ${template.title}">
+                                Book Title
+                            </h2>
+                        </div>
+                    </div>
+
+                    <!-- Dedication Page -->
+                    <div class="preview-page" data-page="1" th:if="${customizedBook.dedication != null and customizedBook.dedication != ''}">
+                        <div class="page-content dedication-page">
+                            <h3>Dedication</h3>
+                            <p class="dedication-text" th:text="${customizedBook.dedication}">Dedication message</p>
+                        </div>
+                    </div>
+
+                    <!-- Story Pages -->
+                    <div th:each="entry : ${previewPages}"
+                         class="preview-page"
+                         th:data-page="${entry.key + 2}">
+                        <div class="page-content">
+                            <div th:if="${entry.value.imageUrl() != null}"
+                                 th:class="'page-image position-' + ${entry.value.imagePosition()}">
+                                <img th:src="${entry.value.imageUrl()}" alt="Page illustration">
+                            </div>
+                            <div class="page-text" th:utext="${entry.value.content()}">
+                                Story content...
+                            </div>
+                            <div class="page-number" th:text="${entry.value.pageNumber()}">1</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page Navigation -->
+                <div class="page-navigation">
+                    <button type="button" class="btn btn-outline" id="prev-page" disabled>
+                        Previous
+                    </button>
+                    <span class="page-indicator">
+                        Page <span id="current-page">1</span> of <span id="total-pages">1</span>
+                    </span>
+                    <button type="button" class="btn btn-outline" id="next-page">
+                        Next
+                    </button>
+                </div>
+            </div>
+
+            <!-- Customization Summary -->
+            <div class="preview-summary">
+                <h3>Your Customizations</h3>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <span class="summary-label">Title:</span>
+                        <span class="summary-value" th:text="${customizedBook.customTitle != null} ? ${customizedBook.customTitle} : ${template.title}">Title</span>
+                    </div>
+                    <div class="summary-item" th:if="${customizedBook.dedication != null}">
+                        <span class="summary-label">Dedication:</span>
+                        <span class="summary-value" th:text="${customizedBook.dedication}">Dedication</span>
+                    </div>
+                    <div class="summary-item" th:each="cc : ${customizedBook.characterCustomizations}">
+                        <span class="summary-label">Character:</span>
+                        <span class="summary-value" th:text="${cc.customName}">Character Name</span>
+                    </div>
+                </div>
+
+                <div class="preview-price">
+                    <span class="price-label">Total:</span>
+                    <span class="price-value" th:text="'$' + ${customizedBook.finalPrice}">$24.99</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="preview-actions">
+                <a th:href="@{/customize/edit/{id}(id=${customizedBook.id})}" class="btn btn-outline">
+                    Edit Customizations
+                </a>
+                <form th:action="@{/preview/{id}/add-to-cart(id=${customizedBook.id})}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-primary btn-large">
+                        Add to Cart
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const pages = document.querySelectorAll('.preview-page');
+            const totalPages = pages.length;
+            let currentPage = 0;
+
+            document.getElementById('total-pages').textContent = totalPages;
+
+            function showPage(index) {
+                pages.forEach((page, i) => {
+                    page.classList.toggle('active', i === index);
+                });
+                document.getElementById('current-page').textContent = index + 1;
+                document.getElementById('prev-page').disabled = index === 0;
+                document.getElementById('next-page').disabled = index === totalPages - 1;
+            }
+
+            document.getElementById('prev-page').addEventListener('click', function() {
+                if (currentPage > 0) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            });
+
+            document.getElementById('next-page').addEventListener('click', function() {
+                if (currentPage < totalPages - 1) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
+
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'ArrowLeft' && currentPage > 0) {
+                    currentPage--;
+                    showPage(currentPage);
+                } else if (e.key === 'ArrowRight' && currentPage < totalPages - 1) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
+        });
+    </script>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

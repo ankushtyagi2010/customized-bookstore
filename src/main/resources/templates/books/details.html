@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head(${book.title})}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a th:href="@{/}">Home</a>
+                <span>/</span>
+                <a th:href="@{/books}">Books</a>
+                <span>/</span>
+                <span th:text="${book.title}">Book Title</span>
+            </nav>
+
+            <div class="book-details">
+                <div class="book-details-image">
+                    <img th:src="${book.coverImageUrl != null} ? ${book.coverImageUrl} : '/images/default-book.jpg'"
+                         th:alt="${book.title}">
+                </div>
+
+                <div class="book-details-info">
+                    <span class="badge" th:if="${book.featured}">Featured</span>
+                    <h1 th:text="${book.title}">Book Title</h1>
+
+                    <div class="book-meta-details">
+                        <div class="meta-item">
+                            <span class="meta-label">Category:</span>
+                            <span class="meta-value" th:text="${book.category}">Adventure</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Age Group:</span>
+                            <span class="meta-value" th:text="${book.ageGroup}">3-5 years</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Pages:</span>
+                            <span class="meta-value" th:text="${book.pageCount}">20</span>
+                        </div>
+                    </div>
+
+                    <p class="book-description-full" th:text="${book.description}">
+                        Full description of the book goes here...
+                    </p>
+
+                    <div class="customization-info">
+                        <h3>Customization Options</h3>
+                        <ul class="customization-list">
+                            <li th:if="${book.customizationOptions.allowTitleCustomization}">
+                                <span class="check-icon">✓</span> Custom book title
+                            </li>
+                            <li th:if="${book.customizationOptions.allowCoverCustomization}">
+                                <span class="check-icon">✓</span> Personalized cover image
+                            </li>
+                            <li th:if="${book.customizationOptions.allowDedication}">
+                                <span class="check-icon">✓</span> Personal dedication message
+                            </li>
+                            <li th:each="slot : ${book.characterSlots}">
+                                <span class="check-icon">✓</span>
+                                <span th:text="'Customize ' + ${slot.slotName}">Custom character</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="price-section">
+                        <span class="price-label">Starting at</span>
+                        <span class="price-value" th:text="'$' + ${book.basePrice}">$24.99</span>
+                    </div>
+
+                    <div class="action-buttons">
+                        <div sec:authorize="isAuthenticated()">
+                            <a th:href="@{/customize/{id}(id=${book.id})}" class="btn btn-primary btn-large">
+                                Start Customizing
+                            </a>
+                        </div>
+                        <div sec:authorize="!isAuthenticated()">
+                            <a th:href="@{/login}" class="btn btn-primary btn-large">
+                                Login to Customize
+                            </a>
+                            <p class="login-hint">You need to be logged in to customize books</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Character Gallery Preview -->
+            <section class="character-preview" th:if="${characterImages != null and !characterImages.isEmpty()}">
+                <h2>Available Characters</h2>
+                <p>Choose from our collection of animated characters for your story</p>
+                <div class="character-gallery">
+                    <div class="character-thumb" th:each="char : ${characterImages}" th:if="${#lists.size(characterImages) <= 8 or charStat.index < 8}">
+                        <img th:src="${char.thumbnailUrl != null} ? ${char.thumbnailUrl} : ${char.imageUrl}"
+                             th:alt="${char.name}">
+                        <span class="character-name" th:text="${char.name}">Character</span>
+                    </div>
+                </div>
+                <p th:if="${#lists.size(characterImages) > 8}" class="more-characters">
+                    And <span th:text="${#lists.size(characterImages) - 8}">more</span> characters to choose from!
+                </p>
+            </section>
+
+            <!-- Story Preview -->
+            <section class="story-preview" th:if="${book.pages != null and !book.pages.isEmpty()}">
+                <h2>Story Preview</h2>
+                <div class="preview-pages">
+                    <div class="preview-page" th:each="page, iterStat : ${book.pages}" th:if="${iterStat.index < 3}">
+                        <div class="page-number" th:text="'Page ' + ${page.pageNumber}">Page 1</div>
+                        <p class="page-preview" th:text="${#strings.abbreviate(page.content, 150)}">
+                            Preview text...
+                        </p>
+                    </div>
+                </div>
+                <p class="preview-note">* Character names and details will be replaced with your customizations</p>
+            </section>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Admin Dashboard')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content admin-layout">
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a th:href="@{/admin}" class="admin-nav-item active">
+                    <span class="nav-icon">📊</span>
+                    Dashboard
+                </a>
+                <a th:href="@{/admin/books}" class="admin-nav-item">
+                    <span class="nav-icon">📚</span>
+                    Book Templates
+                </a>
+                <a th:href="@{/admin/characters}" class="admin-nav-item">
+                    <span class="nav-icon">🎨</span>
+                    Characters
+                </a>
+                <a th:href="@{/admin/orders}" class="admin-nav-item">
+                    <span class="nav-icon">📦</span>
+                    Orders
+                </a>
+                <a th:href="@{/admin/users}" class="admin-nav-item">
+                    <span class="nav-icon">👥</span>
+                    Users
+                </a>
+            </nav>
+        </aside>
+
+        <div class="admin-content">
+            <h1>Admin Dashboard</h1>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📚</div>
+                    <div class="stat-info">
+                        <span class="stat-value" th:text="${totalBooks}">0</span>
+                        <span class="stat-label">Book Templates</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📦</div>
+                    <div class="stat-info">
+                        <span class="stat-value" th:text="${totalOrders}">0</span>
+                        <span class="stat-label">Total Orders</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">⏳</div>
+                    <div class="stat-info">
+                        <span class="stat-value" th:text="${pendingOrders}">0</span>
+                        <span class="stat-label">Pending Orders</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-info">
+                        <span class="stat-value" th:text="${totalUsers}">0</span>
+                        <span class="stat-label">Registered Users</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-sections">
+                <div class="dashboard-section">
+                    <h3>Quick Actions</h3>
+                    <div class="quick-actions">
+                        <a th:href="@{/admin/books/new}" class="action-btn">
+                            <span class="action-icon">➕</span>
+                            Add New Book
+                        </a>
+                        <a th:href="@{/admin/characters/new}" class="action-btn">
+                            <span class="action-icon">🎨</span>
+                            Add Character
+                        </a>
+                        <a th:href="@{/admin/orders?status=PENDING}" class="action-btn">
+                            <span class="action-icon">📋</span>
+                            View Pending Orders
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

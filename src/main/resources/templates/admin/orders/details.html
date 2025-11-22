@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Order Details')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content admin-layout">
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a th:href="@{/admin}" class="admin-nav-item">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a th:href="@{/admin/books}" class="admin-nav-item">
+                    <span class="nav-icon">📚</span> Book Templates
+                </a>
+                <a th:href="@{/admin/characters}" class="admin-nav-item">
+                    <span class="nav-icon">🎨</span> Characters
+                </a>
+                <a th:href="@{/admin/orders}" class="admin-nav-item active">
+                    <span class="nav-icon">📦</span> Orders
+                </a>
+                <a th:href="@{/admin/users}" class="admin-nav-item">
+                    <span class="nav-icon">👥</span> Users
+                </a>
+            </nav>
+        </aside>
+
+        <div class="admin-content">
+            <div class="admin-header">
+                <h1 th:text="'Order ' + ${order.orderNumber}">Order Details</h1>
+                <a th:href="@{/admin/orders}" class="btn btn-outline">Back to Orders</a>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+            <div class="order-admin-details">
+                <div class="detail-section">
+                    <h3>Order Information</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Order Number:</span>
+                            <span th:text="${order.orderNumber}">ORD-123456</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Date:</span>
+                            <span th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy HH:mm')}">Jan 01, 2024</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Status:</span>
+                            <span class="status-badge" th:classappend="${order.status.name()}"
+                                  th:text="${order.status}">PENDING</span>
+                        </div>
+                    </div>
+
+                    <!-- Update Status Form -->
+                    <div class="status-update">
+                        <h4>Update Status</h4>
+                        <form th:action="@{/admin/orders/{id}/status(id=${order.id})}" method="post" class="inline-form">
+                            <select name="status" class="form-control">
+                                <option th:each="s : ${statuses}" th:value="${s.name()}"
+                                        th:text="${s}" th:selected="${s == order.status}">Status</option>
+                            </select>
+                            <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Shipping Address</h3>
+                    <div th:if="${order.shippingAddress != null}" class="address-block">
+                        <p th:text="${order.shippingAddress.fullName}">John Doe</p>
+                        <p th:text="${order.shippingAddress.street}">123 Main St</p>
+                        <p>
+                            <span th:text="${order.shippingAddress.city}">City</span>,
+                            <span th:text="${order.shippingAddress.state}">State</span>
+                            <span th:text="${order.shippingAddress.zipCode}">12345</span>
+                        </p>
+                        <p th:text="${order.shippingAddress.country}">USA</p>
+                        <p th:if="${order.shippingAddress.phone != null}"
+                           th:text="'Phone: ' + ${order.shippingAddress.phone}">Phone</p>
+                    </div>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Order Items</h3>
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Book</th>
+                                <th>Qty</th>
+                                <th>Unit Price</th>
+                                <th>Total</th>
+                                <th>Download</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${order.items}">
+                                <td th:text="${item.bookTitle}">Book Title</td>
+                                <td th:text="${item.quantity}">1</td>
+                                <td th:text="'$' + ${item.unitPrice}">$24.99</td>
+                                <td th:text="'$' + ${item.totalPrice}">$24.99</td>
+                                <td>
+                                    <a th:if="${item.downloadUrl != null}" th:href="${item.downloadUrl}"
+                                       class="btn btn-sm btn-outline">Download</a>
+                                    <span th:unless="${item.downloadUrl != null}">Not generated</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="detail-section">
+                    <h3>Order Summary</h3>
+                    <div class="summary-table">
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span th:text="'$' + ${order.subtotal}">$24.99</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping:</span>
+                            <span th:text="${order.shippingCost != null} ? '$' + ${order.shippingCost} : 'FREE'">FREE</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax:</span>
+                            <span th:text="${order.tax != null} ? '$' + ${order.tax} : '$0.00'">$0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span th:text="'$' + ${order.totalAmount}">$24.99</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

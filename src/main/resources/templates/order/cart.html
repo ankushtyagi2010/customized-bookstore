@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Shopping Cart')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content">
+        <div class="container">
+            <h1>Shopping Cart</h1>
+
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+            <div th:if="${cartItems != null and !cartItems.isEmpty()}" class="cart-container">
+                <div class="cart-items">
+                    <div class="cart-item" th:each="item : ${cartItems}">
+                        <div class="item-image">
+                            <img src="/images/default-book.jpg" alt="Book cover">
+                        </div>
+                        <div class="item-details">
+                            <h3 th:text="${item.customizedBook().customTitle != null} ? ${item.customizedBook().customTitle} : 'Customized Book'">
+                                Book Title
+                            </h3>
+                            <p class="item-meta">Personalized Book</p>
+                            <a th:href="@{/preview/{id}(id=${item.customizedBook().id})}" class="view-preview">
+                                View Preview
+                            </a>
+                        </div>
+                        <div class="item-quantity">
+                            <form th:action="@{/cart/update/{id}(id=${item.cartItem().id})}" method="post" class="quantity-form">
+                                <label>Qty:</label>
+                                <select name="quantity" onchange="this.form.submit()">
+                                    <option th:each="i : ${#numbers.sequence(1, 10)}"
+                                            th:value="${i}"
+                                            th:text="${i}"
+                                            th:selected="${i == item.cartItem().quantity}">1</option>
+                                </select>
+                            </form>
+                        </div>
+                        <div class="item-price">
+                            <span class="unit-price" th:text="'$' + ${item.cartItem().unitPrice}">$24.99</span>
+                            <span class="total-price" th:text="'$' + ${item.cartItem().totalPrice}">$24.99</span>
+                        </div>
+                        <div class="item-actions">
+                            <form th:action="@{/cart/remove/{id}(id=${item.cartItem().id})}" method="post">
+                                <button type="submit" class="btn-remove" title="Remove item">
+                                    Remove
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cart-summary">
+                    <h3>Order Summary</h3>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span th:text="'$' + ${total}">$24.99</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span>Calculated at checkout</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Estimated Total</span>
+                        <span th:text="'$' + ${total}">$24.99</span>
+                    </div>
+                    <a th:href="@{/orders/checkout}" class="btn btn-primary btn-block">
+                        Proceed to Checkout
+                    </a>
+                    <a th:href="@{/books}" class="btn btn-outline btn-block">
+                        Continue Shopping
+                    </a>
+                </div>
+            </div>
+
+            <div th:if="${cartItems == null or cartItems.isEmpty()}" class="empty-cart">
+                <div class="empty-cart-icon">🛒</div>
+                <h2>Your cart is empty</h2>
+                <p>Looks like you haven't added any customized books yet.</p>
+                <a th:href="@{/books}" class="btn btn-primary">Browse Books</a>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

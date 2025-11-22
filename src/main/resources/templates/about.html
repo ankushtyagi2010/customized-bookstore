@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('About Us')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="page-header">
+                <h1>About CustomBooks</h1>
+                <p>Creating magical, personalized stories for children since 2024</p>
+            </div>
+
+            <div class="about-content">
+                <section class="about-section">
+                    <h2>Our Story</h2>
+                    <p>CustomBooks was founded with a simple but powerful idea: every child deserves to be the hero of their own story. We believe that personalized books create unforgettable reading experiences that spark imagination and foster a lifelong love of reading.</p>
+                </section>
+
+                <section class="about-section">
+                    <h2>What Makes Us Special</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎨</div>
+                            <h3>Custom Characters</h3>
+                            <p>Choose from our library of animated characters or upload your own photos to make the story truly unique.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">✨</div>
+                            <h3>Personalized Stories</h3>
+                            <p>Every book is customized with your child's name and personal details woven throughout the narrative.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📚</div>
+                            <h3>Premium Quality</h3>
+                            <p>We use high-quality materials and printing techniques to create books that will be treasured for years.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">💝</div>
+                            <h3>Perfect Gifts</h3>
+                            <p>Our personalized books make memorable gifts for birthdays, holidays, and special occasions.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="about-section">
+                    <h2>Our Process</h2>
+                    <ol class="process-list">
+                        <li><strong>Choose a Story:</strong> Browse our collection of story templates designed for different ages and interests.</li>
+                        <li><strong>Personalize:</strong> Enter your child's name, select characters, and add a personal dedication.</li>
+                        <li><strong>Preview:</strong> See exactly how your customized book will look before ordering.</li>
+                        <li><strong>Order:</strong> Place your order and receive your personalized book delivered to your door.</li>
+                    </ol>
+                </section>
+
+                <section class="about-section cta-section">
+                    <h2>Ready to Create Magic?</h2>
+                    <p>Start creating a personalized book for your little one today!</p>
+                    <a th:href="@{/books}" class="btn btn-primary btn-large">Browse Our Books</a>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+
+    <style>
+        .about-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .about-section {
+            background: var(--bg-primary);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            margin-bottom: 30px;
+        }
+        .about-section h2 {
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        .about-section p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+        .process-list {
+            padding-left: 20px;
+        }
+        .process-list li {
+            margin-bottom: 15px;
+            font-size: 1.05rem;
+        }
+        .cta-section {
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color), #8b5cf6);
+            color: white;
+        }
+        .cta-section h2, .cta-section p {
+            color: white;
+        }
+        .cta-section .btn-primary {
+            background: white;
+            color: var(--primary-color);
+            margin-top: 20px;
+        }
+    </style>
+</body>
+</html>

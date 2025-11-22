@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Manage Orders')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content admin-layout">
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a th:href="@{/admin}" class="admin-nav-item">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a th:href="@{/admin/books}" class="admin-nav-item">
+                    <span class="nav-icon">📚</span> Book Templates
+                </a>
+                <a th:href="@{/admin/characters}" class="admin-nav-item">
+                    <span class="nav-icon">🎨</span> Characters
+                </a>
+                <a th:href="@{/admin/orders}" class="admin-nav-item active">
+                    <span class="nav-icon">📦</span> Orders
+                </a>
+                <a th:href="@{/admin/users}" class="admin-nav-item">
+                    <span class="nav-icon">👥</span> Users
+                </a>
+            </nav>
+        </aside>
+
+        <div class="admin-content">
+            <div class="admin-header">
+                <h1>Orders</h1>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+            <!-- Filter -->
+            <div class="filter-bar">
+                <form th:action="@{/admin/orders}" method="get" class="filter-form">
+                    <label for="status">Filter by Status:</label>
+                    <select name="status" id="status" onchange="this.form.submit()">
+                        <option value="">All Orders</option>
+                        <option th:each="s : ${statuses}" th:value="${s.name()}"
+                                th:text="${s}" th:selected="${s.name() == selectedStatus}">Status</option>
+                    </select>
+                </form>
+            </div>
+
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Items</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="order : ${orders}">
+                            <td th:text="${order.orderNumber}">ORD-123456</td>
+                            <td th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy')}">Jan 01, 2024</td>
+                            <td th:text="${order.userId}">customer@email.com</td>
+                            <td th:text="${#lists.size(order.items)} + ' item(s)'">1 item(s)</td>
+                            <td th:text="'$' + ${order.totalAmount}">$24.99</td>
+                            <td>
+                                <span class="status-badge" th:classappend="${order.status.name()}"
+                                      th:text="${order.status}">PENDING</span>
+                            </td>
+                            <td class="table-actions">
+                                <a th:href="@{/admin/orders/{id}(id=${order.id})}" class="btn btn-sm btn-outline">View</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${orders == null or orders.isEmpty()}" class="empty-state">
+                <p>No orders found.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

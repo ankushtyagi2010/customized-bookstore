@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Manage Users')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content admin-layout">
+        <aside class="admin-sidebar">
+            <nav class="admin-nav">
+                <a th:href="@{/admin}" class="admin-nav-item">
+                    <span class="nav-icon">📊</span> Dashboard
+                </a>
+                <a th:href="@{/admin/books}" class="admin-nav-item">
+                    <span class="nav-icon">📚</span> Book Templates
+                </a>
+                <a th:href="@{/admin/characters}" class="admin-nav-item">
+                    <span class="nav-icon">🎨</span> Characters
+                </a>
+                <a th:href="@{/admin/orders}" class="admin-nav-item">
+                    <span class="nav-icon">📦</span> Orders
+                </a>
+                <a th:href="@{/admin/users}" class="admin-nav-item active">
+                    <span class="nav-icon">👥</span> Users
+                </a>
+            </nav>
+        </aside>
+
+        <div class="admin-content">
+            <div class="admin-header">
+                <h1>Users</h1>
+            </div>
+
+            <div class="admin-table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Registered</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="user : ${users}">
+                            <td th:text="${user.fullName}">John Doe</td>
+                            <td th:text="${user.email}">john@example.com</td>
+                            <td th:text="${user.phone != null} ? ${user.phone} : '-'">555-1234</td>
+                            <td>
+                                <span class="role-badge" th:classappend="${user.role.name()}"
+                                      th:text="${user.role}">CUSTOMER</span>
+                            </td>
+                            <td th:text="${user.createdAt != null} ? ${#temporals.format(user.createdAt, 'MMM dd, yyyy')} : '-'">Jan 01, 2024</td>
+                            <td>
+                                <span class="status-badge" th:classappend="${user.enabled} ? 'active' : 'inactive'"
+                                      th:text="${user.enabled} ? 'Active' : 'Disabled'">Active</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${users == null or users.isEmpty()}" class="empty-state">
+                <p>No users found.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

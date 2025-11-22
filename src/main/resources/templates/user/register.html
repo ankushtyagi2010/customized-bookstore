@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Register')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content">
+        <div class="auth-container">
+            <div class="auth-card">
+                <h1>Create Account</h1>
+                <p class="auth-subtitle">Join us and start creating personalized books</p>
+
+                <form th:action="@{/register}" th:object="${user}" method="post" class="auth-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="firstName">First Name</label>
+                            <input type="text" id="firstName" th:field="*{firstName}" required
+                                   placeholder="First name"
+                                   th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''">
+                            <span class="error-message" th:if="${#fields.hasErrors('firstName')}"
+                                  th:errors="*{firstName}"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="lastName">Last Name</label>
+                            <input type="text" id="lastName" th:field="*{lastName}" required
+                                   placeholder="Last name"
+                                   th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid' : ''">
+                            <span class="error-message" th:if="${#fields.hasErrors('lastName')}"
+                                  th:errors="*{lastName}"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" th:field="*{email}" required
+                               placeholder="Enter your email"
+                               th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
+                        <span class="error-message" th:if="${#fields.hasErrors('email')}"
+                              th:errors="*{email}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone (Optional)</label>
+                        <input type="tel" id="phone" th:field="*{phone}"
+                               placeholder="Enter your phone number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" th:field="*{password}" required
+                               placeholder="Create a password (min 6 characters)"
+                               th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
+                        <span class="error-message" th:if="${#fields.hasErrors('password')}"
+                              th:errors="*{password}"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirmPassword">Confirm Password</label>
+                        <input type="password" id="confirmPassword" th:field="*{confirmPassword}" required
+                               placeholder="Confirm your password"
+                               th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''">
+                        <span class="error-message" th:if="${#fields.hasErrors('confirmPassword')}"
+                              th:errors="*{confirmPassword}"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                </form>
+
+                <div class="auth-links">
+                    <p>Already have an account? <a th:href="@{/login}">Sign in here</a></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

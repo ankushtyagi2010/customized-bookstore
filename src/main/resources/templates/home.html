@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/header :: head('Home')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Create Magical Personalized Books</h1>
+                <p>Make your child the hero of their own story with custom characters, names, and adventures!</p>
+                <a th:href="@{/books}" class="btn btn-primary btn-large">Start Creating</a>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="features">
+            <div class="container">
+                <h2>How It Works</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📖</div>
+                        <h3>Choose a Story</h3>
+                        <p>Browse our collection of beautifully illustrated story templates.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">✏️</div>
+                        <h3>Customize</h3>
+                        <p>Add your child's name, choose characters, and personalize the story.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h3>Select Characters</h3>
+                        <p>Pick from our animated character gallery or upload your own photos.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📬</div>
+                        <h3>Receive Your Book</h3>
+                        <p>Get a beautiful, professionally printed book delivered to your door.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Books Section -->
+        <section class="featured-books">
+            <div class="container">
+                <h2>Featured Stories</h2>
+                <div class="books-grid" th:if="${featuredBooks != null and !featuredBooks.isEmpty()}">
+                    <div class="book-card" th:each="book : ${featuredBooks}">
+                        <div class="book-image">
+                            <img th:src="${book.coverImageUrl != null} ? ${book.coverImageUrl} : '/images/default-book.jpg'"
+                                 th:alt="${book.title}">
+                            <span class="badge" th:if="${book.featured}">Featured</span>
+                        </div>
+                        <div class="book-info">
+                            <h3 th:text="${book.title}">Book Title</h3>
+                            <p class="book-description" th:text="${book.description}">Description</p>
+                            <div class="book-meta">
+                                <span class="age-group" th:text="'Ages ' + ${book.ageGroup}">Ages 3-5</span>
+                                <span class="price" th:text="'$' + ${book.basePrice}">$24.99</span>
+                            </div>
+                            <a th:href="@{/books/{id}(id=${book.id})}" class="btn btn-primary">Customize Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${featuredBooks == null or featuredBooks.isEmpty()}" class="no-books">
+                    <p>No featured books available at the moment. Check back soon!</p>
+                </div>
+                <div class="text-center">
+                    <a th:href="@{/books}" class="btn btn-outline">View All Books</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="testimonials">
+            <div class="container">
+                <h2>What Parents Say</h2>
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <p>"My daughter was so excited to see herself as the main character. She asks to read it every night!"</p>
+                        <div class="testimonial-author">- Sarah M.</div>
+                    </div>
+                    <div class="testimonial-card">
+                        <p>"The quality of the book exceeded my expectations. A truly unique gift!"</p>
+                        <div class="testimonial-author">- Michael R.</div>
+                    </div>
+                    <div class="testimonial-card">
+                        <p>"Easy to customize and the preview feature helped me see exactly what I was getting."</p>
+                        <div class="testimonial-author">- Jennifer L.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

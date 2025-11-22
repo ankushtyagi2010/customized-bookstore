@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: customized-bookstore
+
+  # MongoDB Configuration
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/bookstore
+      database: bookstore
+
+  # Thymeleaf Configuration
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
+
+  # File Upload Configuration
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  # Static Resources
+  web:
+    resources:
+      static-locations: classpath:/static/
+
+# Server Configuration
+server:
+  port: 8080
+
+# Custom Application Properties
+app:
+  upload:
+    dir: ${user.home}/bookstore-uploads
+    character-images: ${app.upload.dir}/characters
+    cover-images: ${app.upload.dir}/covers
+    user-uploads: ${app.upload.dir}/user-uploads
+    generated-pdfs: ${app.upload.dir}/pdfs
+
+# Logging
+logging:
+  level:
+    com.bookstore: DEBUG
+    org.springframework.security: DEBUG
