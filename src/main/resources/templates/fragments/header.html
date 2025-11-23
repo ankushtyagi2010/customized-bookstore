@@ -15,8 +15,8 @@
         </a>
 
         <ul class="navbar-menu">
-            <li><a th:href="@{/}" th:classappend="${#httpServletRequest.requestURI == '/'} ? 'active' : ''">Home</a></li>
-            <li><a th:href="@{/books}" th:classappend="${#httpServletRequest.requestURI.startsWith('/books')} ? 'active' : ''">Browse Books</a></li>
+            <li><a th:href="@{/}">Home</a></li>
+            <li><a th:href="@{/books}">Browse Books</a></li>
             <li><a th:href="@{/about}">About</a></li>
             <li><a th:href="@{/contact}">Contact</a></li>
         </ul>

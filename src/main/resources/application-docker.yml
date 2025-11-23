@@ -1,0 +1,36 @@
+# Docker Profile Configuration
+spring:
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://mongodb:27017/bookstore}
+      database: bookstore
+
+  # Enable Thymeleaf caching in production
+  thymeleaf:
+    cache: true
+
+# Custom Application Properties for Docker
+app:
+  upload:
+    dir: ${APP_UPLOAD_DIR:/app/uploads}
+    character-images: ${app.upload.dir}/characters
+    cover-images: ${app.upload.dir}/covers
+    user-uploads: ${app.upload.dir}/user-uploads
+    generated-pdfs: ${app.upload.dir}/pdfs
+
+# Logging - reduce verbosity in production
+logging:
+  level:
+    com.bookstore: INFO
+    org.springframework.security: WARN
+    root: INFO
+
+# Actuator for health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized
