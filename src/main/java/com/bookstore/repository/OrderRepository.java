@@ -20,4 +20,8 @@ public interface OrderRepository extends MongoRepository<Order, String> {
     List<Order> findByStatus(Order.OrderStatus status);
 
     List<Order> findByCreatedAtBetween(LocalDateTime start, LocalDateTime end);
+
+    List<Order> findByUserIdAndStatusOrderByCreatedAtDesc(String userId, Order.OrderStatus status);
+
+    List<Order> findByOrderNumberContainingIgnoreCase(String orderNumber);
 }

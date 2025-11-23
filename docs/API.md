@@ -44,10 +44,18 @@ The application uses session-based authentication with Spring Security. Users mu
 | POST | `/cart/update/{cartItemId}` | Update item quantity |
 | POST | `/cart/remove/{cartItemId}` | Remove item from cart |
 | POST | `/cart/clear` | Clear entire cart |
-| GET | `/orders` | Order history |
+| GET | `/orders` | Order history (supports filters) |
 | GET | `/orders/{orderId}` | Order details |
 | GET | `/orders/checkout` | Checkout page |
 | POST | `/orders/checkout` | Process checkout |
+| GET | `/orders/confirmation/{orderId}` | Order confirmation page |
+| POST | `/orders/{orderId}/cancel` | Cancel order |
+| GET | `/profile` | User profile page |
+| POST | `/profile/update` | Update personal info |
+| POST | `/profile/password` | Change password |
+| POST | `/profile/address/add` | Add shipping address |
+| POST | `/profile/address/delete/{id}` | Delete address |
+| POST | `/profile/address/default/{id}` | Set default address |
 
 ### Admin Endpoints (Requires ADMIN Role)
 
@@ -221,7 +229,134 @@ country: string (required)
 phone: string (optional)
 ```
 
-**Response:** Redirects to `/orders/{orderId}` on success
+**Response:** Redirects to `/orders/confirmation/{orderId}` on success
+
+---
+
+### Profile Management
+
+#### GET /profile
+
+Display user profile page with tabs for personal info, addresses, and security.
+
+**Response:** Renders profile page with user data and statistics
+
+---
+
+#### POST /profile/update
+
+Update user's personal information.
+
+**Request Body (form-data):**
+```
+firstName: string (required)
+lastName: string (required)
+phone: string (optional)
+```
+
+**Response:** Redirects to `/profile` with success/error message
+
+---
+
+#### POST /profile/password
+
+Change user's password.
+
+**Request Body (form-data):**
+```
+currentPassword: string (required)
+newPassword: string (required, min 6 chars)
+confirmPassword: string (required, must match newPassword)
+```
+
+**Response:** Redirects to `/profile` with success/error message
+
+---
+
+#### POST /profile/address/add
+
+Add a new shipping address to user's profile.
+
+**Request Body (form-data):**
+```
+label: string (optional, e.g., "Home", "Work")
+street: string (required)
+city: string (required)
+state: string (required)
+zipCode: string (required)
+country: string (required)
+isDefault: boolean (optional)
+```
+
+**Response:** Redirects to `/profile` with success/error message
+
+---
+
+#### POST /profile/address/delete/{addressId}
+
+Delete a shipping address.
+
+**Path Parameters:**
+```
+addressId: string - Address ID
+```
+
+**Response:** Redirects to `/profile`
+
+---
+
+#### POST /profile/address/default/{addressId}
+
+Set an address as the default shipping address.
+
+**Path Parameters:**
+```
+addressId: string - Address ID
+```
+
+**Response:** Redirects to `/profile`
+
+---
+
+### Order Management
+
+#### GET /orders
+
+List user's orders with optional filtering and search.
+
+**Query Parameters:**
+```
+status: string (optional) - Filter by status (PENDING, CONFIRMED, PROCESSING, READY, DELIVERED, CANCELLED)
+search: string (optional) - Search by order number
+```
+
+**Response:** Renders order list with filter controls
+
+---
+
+#### POST /orders/{orderId}/cancel
+
+Cancel an order. Only allowed for PENDING or CONFIRMED orders.
+
+**Path Parameters:**
+```
+orderId: string - Order ID
+```
+
+**Response:** Redirects to `/orders/{orderId}` with success/error message
+
+---
+
+#### GET /orders/confirmation/{orderId}
+
+Display order confirmation page after successful checkout.
+
+**Path Parameters:**
+```
+orderId: string - Order ID
+```
+
+**Response:** Renders confirmation page with order summary and next steps
 
 ---
 
@@ -332,6 +467,37 @@ Server error. Shows error page with message.
 }
 ```
 
+### Profile Update DTO
+```java
+{
+  firstName: String (required),
+  lastName: String (required),
+  phone: String (optional)
+}
+```
+
+### Change Password DTO
+```java
+{
+  currentPassword: String (required),
+  newPassword: String (required, min 6 chars),
+  confirmPassword: String (required, must match newPassword)
+}
+```
+
+### Address DTO
+```java
+{
+  label: String (optional, e.g., "Home", "Work"),
+  street: String (required),
+  city: String (required),
+  state: String (required),
+  zipCode: String (required),
+  country: String (required),
+  isDefault: Boolean (optional)
+}
+```
+
 ---
 
 ## Rate Limiting
@@ -341,3 +507,7 @@ Currently, no rate limiting is implemented. Consider adding rate limiting for pr
 ## CORS
 
 CORS is not configured as the application uses server-side rendering. For API-only endpoints, configure CORS appropriately.
+
+---
+
+*Last updated: November 23, 2025 - Phase 7 (Profile & Order Enhancements)*

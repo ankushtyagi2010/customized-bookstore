@@ -206,65 +206,155 @@ java -jar target/customized-bookstore-1.0.0.jar \
 
 ## Docker Deployment
 
-### Dockerfile
+The project includes production-ready Docker configuration with multi-stage builds for optimized images.
 
-Create `Dockerfile` in project root:
+### Dockerfile (Multi-Stage Build)
+
+The included `Dockerfile` uses a multi-stage build process:
 
 ```dockerfile
-FROM openjdk:17-jdk-slim
+# Build stage
+FROM maven:3.9-eclipse-temurin-17-alpine AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+COPY src src
+RUN mvn package -DskipTests -B
 
+# Runtime stage
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 
-COPY target/customized-bookstore-1.0.0.jar app.jar
+# Security: non-root user
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -u 1001 -S appuser -G appgroup
+
+# Create upload directories
+RUN mkdir -p /app/uploads/characters /app/uploads/covers \
+    /app/uploads/user-uploads /app/uploads/pdfs && \
+    chown -R appuser:appgroup /app
+
+COPY --from=build /app/target/*.jar app.jar
+USER appuser
 
 EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
 ```
 
 ### Docker Compose
 
-Create `docker-compose.yml`:
+The `docker-compose.yml` includes three services:
 
 ```yaml
-version: '3.8'
-
 services:
+  # Spring Boot Application
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: customized-bookstore
     ports:
       - "8080:8080"
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/bookstore
-    depends_on:
-      - mongo
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/bookstore
+      - APP_UPLOAD_DIR=/app/uploads
     volumes:
-      - uploads:/app/uploads
+      - bookstore-uploads:/app/uploads
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - bookstore-network
+    restart: unless-stopped
 
-  mongo:
-    image: mongo:6.0
+  # MongoDB Database
+  mongodb:
+    image: mongo:7.0
+    container_name: bookstore-mongodb
     ports:
       - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=bookstore
     volumes:
-      - mongo-data:/data/db
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+    networks:
+      - bookstore-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # MongoDB Express (optional - admin profile)
+  mongo-express:
+    image: mongo-express:latest
+    container_name: bookstore-mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin123
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    profiles:
+      - admin
+
+networks:
+  bookstore-network:
+    driver: bridge
 
 volumes:
-  mongo-data:
-  uploads:
+  mongodb-data:
+  mongodb-config:
+  bookstore-uploads:
 ```
 
 ### Run with Docker Compose
 
 ```bash
-# Build and run
-mvn clean package -DskipTests
+# Build and start all services
+docker-compose up -d --build
+
+# Build with no cache (after code changes)
+docker-compose build --no-cache app
 docker-compose up -d
 
 # View logs
 docker-compose logs -f app
 
-# Stop
+# View container status
+docker-compose ps
+
+# Stop all services
 docker-compose down
+
+# Start with MongoDB admin UI
+docker-compose --profile admin up -d
+```
+
+### Updating After Code Changes
+
+When you make changes to CSS, HTML, or Java files:
+
+```bash
+# Rebuild and restart the application
+docker-compose down
+docker-compose build --no-cache app
+docker-compose up -d
+
+# Verify containers are healthy
+docker-compose ps
 ```
 
 ---

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: head('Order Confirmed')}"></head>
+<body>
+    <nav th:replace="~{fragments/header :: navbar}"></nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="confirmation-container">
+                <div class="confirmation-header">
+                    <div class="success-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                    <h1>Order Confirmed!</h1>
+                    <p class="confirmation-message">Thank you for your order. We're getting your personalized books ready!</p>
+                </div>
+
+                <div class="confirmation-details">
+                    <div class="order-confirmation-card">
+                        <div class="confirmation-row">
+                            <span class="label">Order Number</span>
+                            <span class="value" th:text="${order.orderNumber}">ORD-20240101-ABC123</span>
+                        </div>
+                        <div class="confirmation-row">
+                            <span class="label">Order Date</span>
+                            <span class="value" th:text="${#temporals.format(order.createdAt, 'MMMM dd, yyyy')}">January 01, 2024</span>
+                        </div>
+                        <div class="confirmation-row">
+                            <span class="label">Status</span>
+                            <span class="status-badge" th:classappend="${order.status.name()}" th:text="${order.status}">PENDING</span>
+                        </div>
+                        <div class="confirmation-row total">
+                            <span class="label">Total Amount</span>
+                            <span class="value" th:text="'$' + ${order.totalAmount}">$24.99</span>
+                        </div>
+                    </div>
+
+                    <div class="order-items-summary">
+                        <h3>Items Ordered</h3>
+                        <div class="confirmation-items">
+                            <div class="confirmation-item" th:each="item : ${order.items}">
+                                <div class="item-icon">📚</div>
+                                <div class="item-details">
+                                    <span class="item-title" th:text="${item.bookTitle}">Book Title</span>
+                                    <span class="item-qty" th:text="'Qty: ' + ${item.quantity}">Qty: 1</span>
+                                </div>
+                                <div class="item-price" th:text="'$' + ${item.totalPrice}">$24.99</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="shipping-summary" th:if="${order.shippingAddress != null}">
+                        <h3>Shipping To</h3>
+                        <div class="shipping-address">
+                            <p th:text="${order.shippingAddress.fullName}">John Doe</p>
+                            <p th:text="${order.shippingAddress.street}">123 Main Street</p>
+                            <p>
+                                <span th:text="${order.shippingAddress.city}">City</span>,
+                                <span th:text="${order.shippingAddress.state}">State</span>
+                                <span th:text="${order.shippingAddress.zipCode}">12345</span>
+                            </p>
+                            <p th:text="${order.shippingAddress.country}">USA</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="what-next">
+                    <h3>What Happens Next?</h3>
+                    <div class="next-steps">
+                        <div class="next-step">
+                            <div class="step-number">1</div>
+                            <div class="step-info">
+                                <h4>Processing</h4>
+                                <p>We'll start creating your personalized books right away.</p>
+                            </div>
+                        </div>
+                        <div class="next-step">
+                            <div class="step-number">2</div>
+                            <div class="step-info">
+                                <h4>Ready for Download</h4>
+                                <p>Once ready, you'll be able to download your PDF books from your orders page.</p>
+                            </div>
+                        </div>
+                        <div class="next-step">
+                            <div class="step-number">3</div>
+                            <div class="step-info">
+                                <h4>Enjoy!</h4>
+                                <p>Print at home or use our print-on-demand service for a professional copy.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="confirmation-actions">
+                    <a th:href="@{/orders/{id}(id=${order.id})}" class="btn btn-primary">View Order Details</a>
+                    <a th:href="@{/books}" class="btn btn-outline">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer th:replace="~{fragments/footer :: footer}"></footer>
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+</body>
+</html>

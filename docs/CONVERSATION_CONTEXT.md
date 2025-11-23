@@ -67,7 +67,7 @@ The following implementation plan was created and approved:
 
 ### Files Created
 
-#### Java Classes (27 files)
+#### Java Classes (31 files)
 
 **Main Application:**
 - `BookstoreApplication.java` - Spring Boot entry point
@@ -99,14 +99,15 @@ The following implementation plan was created and approved:
 - `FileStorageService.java` - File upload handling
 - `PdfGenerationService.java` - PDF book generation with iText
 
-**Controllers (8 files):**
+**Controllers (9 files):**
 - `HomeController.java` - Home, about, contact pages
 - `AuthController.java` - Login, registration
 - `BookController.java` - Book catalog, details
 - `CustomizeController.java` - Customization wizard
 - `PreviewController.java` - Book preview
 - `CartController.java` - Shopping cart
-- `OrderController.java` - Orders and checkout
+- `OrderController.java` - Orders, checkout, cancellation
+- `ProfileController.java` - User profile, addresses, password
 - `AdminController.java` - Admin panel operations
 
 **Configuration (5 files):**
@@ -116,11 +117,14 @@ The following implementation plan was created and approved:
 - `WebConfig.java` - Static resource handling
 - `DataInitializer.java` - Sample data seeding
 
-**DTOs (2 files):**
+**DTOs (5 files):**
 - `UserRegistrationDto.java`
 - `BookCustomizationDto.java`
+- `ProfileUpdateDto.java`
+- `ChangePasswordDto.java`
+- `AddressDto.java`
 
-#### HTML Templates (24 files)
+#### HTML Templates (26 files)
 
 **Public Pages:**
 - `home.html` - Landing page with featured books
@@ -138,11 +142,15 @@ The following implementation plan was created and approved:
 - `books/customize.html` - Multi-step customization wizard
 - `books/preview.html` - Book preview with page navigation
 
+**Profile Pages:**
+- `profile/profile.html` - User profile with tabs (personal info, addresses, security)
+
 **Order Pages:**
 - `order/cart.html` - Shopping cart
 - `order/checkout.html` - Checkout with address form
-- `order/list.html` - Order history
-- `order/details.html` - Order details with timeline
+- `order/list.html` - Order history with filters
+- `order/details.html` - Order details with timeline and cancel
+- `order/confirmation.html` - Order success page
 
 **Admin Pages:**
 - `admin/dashboard.html` - Statistics and quick actions
@@ -159,7 +167,7 @@ The following implementation plan was created and approved:
 - `fragments/footer.html` - Footer
 
 #### Static Resources
-- `css/style.css` - Complete responsive stylesheet (800+ lines)
+- `css/style.css` - Complete responsive stylesheet (~2000 lines, dark theme)
 - `js/main.js` - JavaScript utilities and interactions
 
 #### Configuration Files
@@ -278,4 +286,172 @@ The entire codebase was written from scratch with clean architecture principles,
 
 ---
 
-*This document was generated as part of the project development conversation on November 22, 2025.*
+## Update: Dark Theme Implementation
+
+**Date:** November 23, 2025
+
+### Changes Made
+
+1. **Complete Dark Theme Redesign**
+   - Transformed the entire UI from light to dark theme
+   - Implemented CSS custom properties for consistent theming
+   - Updated all components to use dark color palette
+
+2. **Interactive Form Controls**
+   - Added hover effects with subtle lift animation
+   - Added focus effects with glowing border
+   - Implemented smooth transitions using cubic-bezier easing
+   - Added shadow effects to all text inputs and textareas
+
+3. **Shadow Effects**
+   - Added layered box shadows to form inputs
+   - Implemented glowing focus states with primary color
+   - Added depth shadows to cards and containers
+
+4. **CSS Variables Added**
+   ```css
+   --bg-primary: #0f172a;           /* Slate 900 */
+   --bg-secondary: #1e293b;         /* Slate 800 */
+   --bg-tertiary: #334155;          /* Slate 700 */
+   --text-primary: #f1f5f9;         /* Slate 100 */
+   --text-secondary: #94a3b8;       /* Slate 400 */
+   --primary-color: #818cf8;        /* Indigo */
+   --primary-glow: rgba(129, 140, 248, 0.4);
+   --input-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+   --input-shadow-focus: 0 0 0 3px var(--primary-glow);
+   ```
+
+5. **Components Updated**
+   - Navigation bar
+   - All buttons and links
+   - Cards and containers
+   - Form inputs and textareas
+   - Alerts and notifications
+   - Shopping cart section
+   - Order management pages
+   - Admin dashboard and forms
+   - Filter sections
+   - Testimonials section
+   - Footer
+
+6. **Docker Updates**
+   - Rebuilt Docker image with CSS changes
+   - Restarted containers with new configuration
+
+### Files Modified
+- `src/main/resources/static/css/style.css` - Complete dark theme overhaul
+
+---
+
+## Update: Phase 7 - Profile & Order Page Enhancement
+
+**Date:** November 23, 2025
+
+### New Features Implemented
+
+#### 1. User Profile Page (`/profile`)
+
+A complete profile management system with tabbed interface:
+
+**Personal Info Tab:**
+- Edit first name, last name, phone number
+- Email display (read-only)
+- Member since date display
+
+**Addresses Tab:**
+- Add new shipping addresses
+- Delete existing addresses
+- Set default address
+- Address cards with label, full address, and actions
+
+**Security Tab:**
+- Change password with current password validation
+- Account status information
+- Account type and last updated date
+
+**Profile Header:**
+- Avatar with user initials
+- User name and email
+- Member since date
+- Statistics: total orders, total books created
+
+#### 2. Order Page Enhancements
+
+**Order List Improvements:**
+- Filter orders by status (PENDING, CONFIRMED, PROCESSING, READY, DELIVERED, CANCELLED)
+- Search orders by order number
+- Clear filters button
+- Empty state handling for filtered results
+
+**Order Details Improvements:**
+- Cancel order button (for PENDING/CONFIRMED orders only)
+- Print invoice button with print-optimized CSS
+- Cancelled order timeline with red marker
+- Success/error message display
+
+**Order Confirmation Page:**
+- Success animation with checkmark icon
+- Order summary with order number, date, status, total
+- Items ordered list
+- Shipping address display
+- "What Happens Next?" section with step-by-step guide
+- Action buttons: View Order Details, Continue Shopping
+
+### Files Created
+
+**Java Classes (4 new files):**
+- `ProfileController.java` - Handles profile, address, and password endpoints
+- `ProfileUpdateDto.java` - Profile edit form validation
+- `ChangePasswordDto.java` - Password change form validation
+- `AddressDto.java` - Address form validation
+
+**HTML Templates (2 new files):**
+- `templates/profile/profile.html` - Full profile page with tabs
+- `templates/order/confirmation.html` - Order success page
+
+### Files Modified
+
+**Java Classes:**
+- `OrderController.java` - Added cancel endpoint, filter/search parameters
+- `OrderService.java` - Added cancelOrder() and findByUserIdAndStatus() methods
+- `OrderRepository.java` - Added new query methods
+
+**HTML Templates:**
+- `order/list.html` - Added filter/search form
+- `order/details.html` - Added cancel button, print button, cancelled timeline
+
+**CSS:**
+- `style.css` - Added ~300 lines for:
+  - Profile page styles (avatar, tabs, sections, address cards)
+  - Order confirmation styles
+  - Print styles for invoice
+  - Cancelled timeline marker
+  - Responsive adjustments
+
+### New Endpoints
+
+| Method | URL | Description |
+|--------|-----|-------------|
+| GET | `/profile` | View profile page |
+| POST | `/profile/update` | Update personal info |
+| POST | `/profile/password` | Change password |
+| POST | `/profile/address/add` | Add new address |
+| POST | `/profile/address/delete/{id}` | Delete address |
+| POST | `/profile/address/default/{id}` | Set default address |
+| GET | `/orders?status=X&search=Y` | Filter orders |
+| POST | `/orders/{id}/cancel` | Cancel order |
+| GET | `/orders/confirmation/{id}` | Order confirmation page |
+
+### CSS Variables Used
+
+The new components follow the existing dark theme:
+- Profile avatar: gradient with primary colors
+- Tabs: transparent background, primary color when active
+- Address cards: secondary background with hover effects
+- Confirmation success icon: success color with glow effect
+
+---
+
+*Initial development: November 22, 2025*
+*Dark theme update: November 23, 2025*
+*Phase 7 (Profile & Orders): November 23, 2025*

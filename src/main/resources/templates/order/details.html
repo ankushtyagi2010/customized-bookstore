@@ -12,6 +12,9 @@
                 <span th:text="${order.orderNumber}">Order Details</span>
             </nav>
 
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
             <div class="order-details-container">
                 <div class="order-details-header">
                     <div>
@@ -20,10 +23,13 @@
                             Placed on January 01, 2024
                         </p>
                     </div>
-                    <div class="order-status">
+                    <div class="order-header-actions">
                         <span class="status-badge large"
                               th:classappend="${order.status.name()}"
                               th:text="${order.status}">PENDING</span>
+                        <button onclick="window.print()" class="btn btn-outline btn-sm print-btn">
+                            Print Invoice
+                        </button>
                     </div>
                 </div>
 
@@ -97,7 +103,31 @@
                     <!-- Order Timeline -->
                     <div class="order-section">
                         <h3>Order Timeline</h3>
-                        <div class="timeline">
+
+                        <!-- Cancelled Order Timeline -->
+                        <div th:if="${order.status.name() == 'CANCELLED'}" class="timeline cancelled-timeline">
+                            <div class="timeline-item completed">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <p class="timeline-title">Order Placed</p>
+                                    <p class="timeline-date" th:text="${#temporals.format(order.createdAt, 'MMM dd, yyyy HH:mm')}">
+                                        Jan 01, 2024
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="timeline-item cancelled">
+                                <div class="timeline-marker"></div>
+                                <div class="timeline-content">
+                                    <p class="timeline-title">Order Cancelled</p>
+                                    <p class="timeline-date" th:text="${#temporals.format(order.updatedAt, 'MMM dd, yyyy HH:mm')}">
+                                        Jan 02, 2024
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Normal Order Timeline -->
+                        <div th:unless="${order.status.name() == 'CANCELLED'}" class="timeline">
                             <div class="timeline-item completed">
                                 <div class="timeline-marker"></div>
                                 <div class="timeline-content">
@@ -138,6 +168,15 @@
 
                 <div class="order-actions">
                     <a th:href="@{/orders}" class="btn btn-outline">Back to Orders</a>
+
+                    <!-- Cancel Order Button - only for PENDING or CONFIRMED orders -->
+                    <form th:if="${order.status.name() == 'PENDING' or order.status.name() == 'CONFIRMED'}"
+                          th:action="@{/orders/{id}/cancel(id=${order.id})}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-danger"
+                                onclick="return confirm('Are you sure you want to cancel this order? This action cannot be undone.')">
+                            Cancel Order
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

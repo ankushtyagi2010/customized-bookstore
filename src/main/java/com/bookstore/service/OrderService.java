@@ -122,6 +122,39 @@ public class OrderService {
         return orderRepository.save(order);
     }
 
+    public Order cancelOrder(String orderId, String userId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        // Verify user owns this order
+        if (!order.getUserId().equals(userId)) {
+            throw new RuntimeException("Access denied");
+        }
+
+        // Only allow cancellation for PENDING or CONFIRMED orders
+        if (order.getStatus() != Order.OrderStatus.PENDING &&
+            order.getStatus() != Order.OrderStatus.CONFIRMED) {
+            throw new RuntimeException("Order cannot be cancelled - it is already being processed");
+        }
+
+        order.setStatus(Order.OrderStatus.CANCELLED);
+        order.setUpdatedAt(LocalDateTime.now());
+
+        // Update customized books status back to PREVIEW_READY
+        for (Order.OrderItem item : order.getItems()) {
+            customizedBookService.updateStatus(item.getCustomizedBookId(), CustomizedBook.Status.PREVIEW_READY);
+        }
+
+        return orderRepository.save(order);
+    }
+
+    public List<Order> findByUserIdAndStatus(String userId, Order.OrderStatus status) {
+        if (status == null) {
+            return orderRepository.findByUserIdOrderByCreatedAtDesc(userId);
+        }
+        return orderRepository.findByUserIdAndStatusOrderByCreatedAtDesc(userId, status);
+    }
+
     private String generateOrderNumber() {
         String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String random = UUID.randomUUID().toString().substring(0, 6).toUpperCase();

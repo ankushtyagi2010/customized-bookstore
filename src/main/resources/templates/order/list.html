@@ -6,9 +6,35 @@
 
     <main class="main-content">
         <div class="container">
-            <h1>My Orders</h1>
+            <div class="page-header-with-actions">
+                <h1>My Orders</h1>
+            </div>
 
             <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <form th:action="@{/orders}" method="get" class="filters-form">
+                    <div class="filter-group">
+                        <label for="search">Search Order</label>
+                        <input type="text" id="search" name="search" th:value="${searchTerm}"
+                               class="form-control" placeholder="Order number...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="status">Status</label>
+                        <select id="status" name="status" class="form-control">
+                            <option value="">All Orders</option>
+                            <option th:each="s : ${statuses}" th:value="${s.name()}"
+                                    th:text="${s.name()}" th:selected="${s.name() == currentStatus}"></option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <a th:href="@{/orders}" class="btn btn-secondary">Clear</a>
+                    </div>
+                </form>
+            </div>
 
             <div th:if="${orders != null and !orders.isEmpty()}" class="orders-list">
                 <div class="order-card" th:each="order : ${orders}">
@@ -57,9 +83,16 @@
 
             <div th:if="${orders == null or orders.isEmpty()}" class="empty-orders">
                 <div class="empty-icon">📋</div>
-                <h2>No orders yet</h2>
-                <p>You haven't placed any orders yet. Start by customizing a book!</p>
-                <a th:href="@{/books}" class="btn btn-primary">Browse Books</a>
+                <div th:if="${currentStatus != null or searchTerm != null}">
+                    <h2>No matching orders</h2>
+                    <p>No orders found with the current filters. Try adjusting your search criteria.</p>
+                    <a th:href="@{/orders}" class="btn btn-primary">View All Orders</a>
+                </div>
+                <div th:unless="${currentStatus != null or searchTerm != null}">
+                    <h2>No orders yet</h2>
+                    <p>You haven't placed any orders yet. Start by customizing a book!</p>
+                    <a th:href="@{/books}" class="btn btn-primary">Browse Books</a>
+                </div>
             </div>
         </div>
     </main>

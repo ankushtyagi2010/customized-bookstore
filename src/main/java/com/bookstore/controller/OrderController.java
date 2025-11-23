@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/orders")
@@ -29,12 +30,39 @@ public class OrderController {
     }
 
     @GetMapping
-    public String listOrders(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+    public String listOrders(@AuthenticationPrincipal UserDetails userDetails,
+                             @RequestParam(required = false) String status,
+                             @RequestParam(required = false) String search,
+                             Model model) {
         User user = userService.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        List<Order> orders = orderService.findByUserId(user.getId());
+        List<Order> orders;
+
+        // Filter by status if provided
+        if (status != null && !status.isEmpty()) {
+            try {
+                Order.OrderStatus orderStatus = Order.OrderStatus.valueOf(status);
+                orders = orderService.findByUserIdAndStatus(user.getId(), orderStatus);
+            } catch (IllegalArgumentException e) {
+                orders = orderService.findByUserId(user.getId());
+            }
+        } else {
+            orders = orderService.findByUserId(user.getId());
+        }
+
+        // Filter by search term (order number) if provided
+        if (search != null && !search.trim().isEmpty()) {
+            String searchTerm = search.trim().toLowerCase();
+            orders = orders.stream()
+                    .filter(o -> o.getOrderNumber().toLowerCase().contains(searchTerm))
+                    .collect(Collectors.toList());
+        }
+
         model.addAttribute("orders", orders);
+        model.addAttribute("currentStatus", status);
+        model.addAttribute("searchTerm", search);
+        model.addAttribute("statuses", Order.OrderStatus.values());
 
         return "order/list";
     }
@@ -84,8 +112,7 @@ public class OrderController {
 
         try {
             Order order = orderService.createOrderFromCart(user.getId(), shippingAddress);
-            redirectAttributes.addFlashAttribute("success", "Order placed successfully!");
-            return "redirect:/orders/" + order.getId();
+            return "redirect:/orders/confirmation/" + order.getId();
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/cart";
@@ -109,5 +136,23 @@ public class OrderController {
 
         model.addAttribute("order", order);
         return "order/confirmation";
+    }
+
+    @PostMapping("/{orderId}/cancel")
+    public String cancelOrder(@PathVariable String orderId,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              RedirectAttributes redirectAttributes) {
+
+        User user = userService.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        try {
+            orderService.cancelOrder(orderId, user.getId());
+            redirectAttributes.addFlashAttribute("success", "Order cancelled successfully");
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+        }
+
+        return "redirect:/orders/" + orderId;
     }
 }

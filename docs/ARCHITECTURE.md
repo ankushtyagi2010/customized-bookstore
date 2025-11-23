@@ -65,10 +65,13 @@ CustomBooks is a web application built using a layered architecture pattern with
 ### 1. Client Layer
 - **Technology:** HTML5, CSS3, Vanilla JavaScript
 - **Responsibility:** User interface rendering and client-side interactions
+- **Theme:** Dark Theme with interactive elements
 - **Components:**
   - Thymeleaf-rendered HTML pages
-  - Responsive CSS styling
+  - Responsive CSS styling with CSS custom properties (variables)
   - JavaScript for dynamic interactions
+  - Interactive form controls with hover/focus effects
+  - Shadow effects and glow animations
 
 ### 2. Presentation Layer
 - **Technology:** Spring MVC, Thymeleaf
@@ -128,6 +131,24 @@ CustomBooks is a web application built using a layered architecture pattern with
 4. Store user context → SecurityContext
 ```
 
+### Profile Management Flow
+```
+1. User accesses profile → ProfileController
+2. View/edit personal info → UserService.updateProfile()
+3. Manage addresses → UserService.addAddress() / deleteAddress()
+4. Change password → UserService.changePassword()
+5. Display stats → OrderService / CustomizedBookService
+```
+
+### Order Cancellation Flow
+```
+1. User requests cancellation → OrderController.cancelOrder()
+2. Validate ownership → OrderService.cancelOrder()
+3. Check status (PENDING/CONFIRMED only)
+4. Update status to CANCELLED
+5. Revert customized books → CustomizedBookService.updateStatus(PREVIEW_READY)
+```
+
 ## Security Architecture
 
 ```
@@ -142,7 +163,7 @@ CustomBooks is a web application built using a layered architecture pattern with
 
 Access Control:
 ├── Public: /, /home, /books, /about, /contact, /login, /register
-├── Authenticated: /cart, /checkout, /orders, /customize, /preview
+├── Authenticated: /cart, /checkout, /orders, /customize, /preview, /profile
 └── Admin Only: /admin/**
 ```
 
@@ -224,7 +245,7 @@ Access Control:
   "shippingCost": "decimal",
   "totalAmount": "decimal",
   "shippingAddress": "ShippingAddress",
-  "status": "PENDING | CONFIRMED | PROCESSING | READY | DELIVERED"
+  "status": "PENDING | CONFIRMED | PROCESSING | READY | DELIVERED | CANCELLED"
 }
 ```
 
@@ -239,3 +260,71 @@ Access Control:
 | Image Processing | Thumbnailator | Simple API, good performance |
 | Authentication | Spring Security | Comprehensive security framework |
 | Build Tool | Maven | Widely adopted, good dependency management |
+
+## UI/Theme Architecture
+
+### Dark Theme Design
+
+The application uses a modern dark theme implemented with CSS custom properties (variables) for consistent styling across all components.
+
+#### CSS Variables Structure
+
+```css
+:root {
+    /* Primary Colors */
+    --primary-color: #818cf8;        /* Indigo accent */
+    --primary-hover: #6366f1;        /* Darker indigo */
+    --primary-glow: rgba(129, 140, 248, 0.4);
+
+    /* Background Colors */
+    --bg-primary: #0f172a;           /* Slate 900 - darkest */
+    --bg-secondary: #1e293b;         /* Slate 800 */
+    --bg-tertiary: #334155;          /* Slate 700 */
+    --bg-card: #1e293b;              /* Card backgrounds */
+    --bg-input: #1e293b;             /* Input backgrounds */
+
+    /* Text Colors */
+    --text-primary: #f1f5f9;         /* Slate 100 */
+    --text-secondary: #94a3b8;       /* Slate 400 */
+
+    /* Shadow Effects */
+    --input-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    --input-shadow-focus: 0 0 0 3px var(--primary-glow);
+    --glow-shadow: 0 0 20px rgba(129, 140, 248, 0.3);
+}
+```
+
+### Interactive Form Controls
+
+All form inputs feature:
+- **Hover Effects:** Subtle lift with `transform: translateY(-1px)`
+- **Focus Effects:** Glowing border with primary color
+- **Shadow Effects:** Layered box shadows for depth
+- **Smooth Transitions:** Cubic-bezier easing for natural motion
+
+```css
+.form-control:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--input-shadow), 0 0 0 1px rgba(129, 140, 248, 0.1);
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: var(--input-shadow-focus);
+    transform: translateY(-2px);
+}
+```
+
+### Component Styling
+
+| Component | Background | Border | Shadow |
+|-----------|------------|--------|--------|
+| Cards | `--bg-card` | `--border-color` | Layered shadow |
+| Inputs | `--bg-input` | `--border-color` | `--input-shadow` |
+| Buttons | `--primary-color` | None | Glow on hover |
+| Navbar | `--bg-secondary` | Bottom border | Subtle shadow |
+| Footer | `--bg-secondary` | Top border | None |
+
+---
+
+*Last updated: November 23, 2025 - Phase 7 (Profile & Order Enhancements)*
