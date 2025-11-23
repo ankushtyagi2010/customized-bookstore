@@ -37,6 +37,45 @@ A web application for creating and ordering customized books where customers can
 - Java 17 or higher
 - Maven 3.6+
 - MongoDB 4.4+ (running on localhost:27017)
+- Docker & Docker Compose (for containerized deployment)
+
+## Quick Start with Docker
+
+The fastest way to get started is using Docker Compose:
+
+```bash
+# Clone and start the application
+docker-compose up -d --build
+
+# Access the application at http://localhost:8080
+```
+
+This will start:
+- **Application**: http://localhost:8080
+- **MongoDB**: localhost:27017
+
+To include the optional MongoDB admin UI:
+```bash
+docker-compose --profile admin up -d --build
+# MongoDB Express available at http://localhost:8081
+# Login: admin / admin123
+```
+
+### Docker Commands
+
+```bash
+# View logs
+docker-compose logs -f app
+
+# Stop services
+docker-compose down
+
+# Stop and remove volumes (reset data)
+docker-compose down -v
+
+# Rebuild after code changes
+docker-compose up -d --build
+```
 
 ## Installation & Setup
 
@@ -76,7 +115,7 @@ The application creates sample users on first run:
 ## Project Structure
 
 ```
-bookstore/
+customized-bookstore/
 ├── src/main/java/com/bookstore/
 │   ├── config/          # Configuration classes
 │   ├── controller/      # MVC Controllers
@@ -88,8 +127,13 @@ bookstore/
 ├── src/main/resources/
 │   ├── static/          # CSS, JS, images
 │   ├── templates/       # Thymeleaf templates
-│   └── application.yml  # Configuration
-└── pom.xml
+│   ├── application.yml  # Default configuration
+│   └── application-docker.yml  # Docker profile config
+├── docs/                # Documentation
+├── Dockerfile           # Multi-stage Docker build
+├── docker-compose.yml   # Container orchestration
+├── .dockerignore        # Docker build exclusions
+└── pom.xml              # Maven configuration
 ```
 
 ## Key Endpoints
@@ -162,6 +206,42 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 mvn clean package -DskipTests
 java -jar target/customized-bookstore-1.0.0.jar
 ```
+
+## Docker Deployment Details
+
+### Architecture
+
+The Docker setup uses a multi-stage build for optimal image size:
+
+1. **Build Stage**: Maven compiles the application
+2. **Runtime Stage**: Lightweight JRE Alpine image runs the JAR
+
+### Container Services
+
+| Service | Container Name | Port | Description |
+|---------|---------------|------|-------------|
+| app | customized-bookstore | 8080 | Spring Boot application |
+| mongodb | bookstore-mongodb | 27017 | MongoDB database |
+| mongo-express | bookstore-mongo-express | 8081 | DB admin UI (optional) |
+
+### Volumes
+
+- `mongodb-data`: Persistent MongoDB data
+- `mongodb-config`: MongoDB configuration
+- `bookstore-uploads`: User uploads and generated PDFs
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `SPRING_PROFILES_ACTIVE` | docker | Active Spring profile |
+| `SPRING_DATA_MONGODB_URI` | mongodb://mongodb:27017/bookstore | MongoDB connection |
+| `APP_UPLOAD_DIR` | /app/uploads | Upload directory path |
+
+### Health Checks
+
+- **Application**: `GET /actuator/health`
+- **MongoDB**: `mongosh --eval "db.adminCommand('ping')"`
 
 ## Future Enhancements
 
