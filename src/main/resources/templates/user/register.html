@@ -13,18 +13,32 @@
                 <form th:action="@{/register}" th:object="${user}" method="post" class="auth-form">
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="firstName">First Name</label>
+                            <label for="firstName">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 5px;">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                First Name
+                            </label>
                             <input type="text" id="firstName" th:field="*{firstName}" required
-                                   placeholder="First name"
+                                   placeholder="Enter your first name"
+                                   autocomplete="given-name"
                                    th:classappend="${#fields.hasErrors('firstName')} ? 'is-invalid' : ''">
                             <span class="error-message" th:if="${#fields.hasErrors('firstName')}"
                                   th:errors="*{firstName}"></span>
                         </div>
 
                         <div class="form-group">
-                            <label for="lastName">Last Name</label>
+                            <label for="lastName">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 5px;">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                Last Name
+                            </label>
                             <input type="text" id="lastName" th:field="*{lastName}" required
-                                   placeholder="Last name"
+                                   placeholder="Enter your last name"
+                                   autocomplete="family-name"
                                    th:classappend="${#fields.hasErrors('lastName')} ? 'is-invalid' : ''">
                             <span class="error-message" th:if="${#fields.hasErrors('lastName')}"
                                   th:errors="*{lastName}"></span>
@@ -32,39 +46,74 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="email">Email</label>
+                        <label for="email">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Email Address
+                        </label>
                         <input type="email" id="email" th:field="*{email}" required
-                               placeholder="Enter your email"
+                               placeholder="your.email@example.com"
+                               autocomplete="email"
                                th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
                         <span class="error-message" th:if="${#fields.hasErrors('email')}"
                               th:errors="*{email}"></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="phone">Phone (Optional)</label>
+                        <label for="phone">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                            </svg>
+                            Phone Number
+                            <span style="color: var(--text-light); font-weight: 400; font-size: 0.85rem;">(Optional)</span>
+                        </label>
                         <input type="tel" id="phone" th:field="*{phone}"
-                               placeholder="Enter your phone number">
+                               placeholder="+1 (555) 123-4567"
+                               autocomplete="tel">
                     </div>
 
                     <div class="form-group">
-                        <label for="password">Password</label>
+                        <label for="password">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                            Password
+                        </label>
                         <input type="password" id="password" th:field="*{password}" required
-                               placeholder="Create a password (min 6 characters)"
+                               placeholder="Create a strong password (min 6 characters)"
+                               autocomplete="new-password"
                                th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
                         <span class="error-message" th:if="${#fields.hasErrors('password')}"
                               th:errors="*{password}"></span>
                     </div>
 
                     <div class="form-group">
-                        <label for="confirmPassword">Confirm Password</label>
+                        <label for="confirmPassword">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 6px;">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            Confirm Password
+                        </label>
                         <input type="password" id="confirmPassword" th:field="*{confirmPassword}" required
-                               placeholder="Confirm your password"
+                               placeholder="Re-enter your password"
+                               autocomplete="new-password"
                                th:classappend="${#fields.hasErrors('confirmPassword')} ? 'is-invalid' : ''">
                         <span class="error-message" th:if="${#fields.hasErrors('confirmPassword')}"
                               th:errors="*{confirmPassword}"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                    <button type="submit" class="btn btn-primary btn-block">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: middle; margin-right: 8px;">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <line x1="20" y1="8" x2="20" y2="14"></line>
+                            <line x1="23" y1="11" x2="17" y2="11"></line>
+                        </svg>
+                        Create Account
+                    </button>
                 </form>
 
                 <div class="auth-links">

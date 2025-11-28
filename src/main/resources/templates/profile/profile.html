@@ -214,36 +214,74 @@
 
     <footer th:replace="~{fragments/footer :: footer}"></footer>
 
+    <div th:replace="~{fragments/footer :: scripts}"></div>
+
     <script>
-        // Tab switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Remove active from all tabs and panes
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+        console.log('Profile tab script loading...');
 
-                // Add active to clicked tab and corresponding pane
-                btn.classList.add('active');
-                document.getElementById(btn.dataset.tab).classList.add('active');
+        // Wait a tiny bit to ensure everything is ready
+        setTimeout(function() {
+            console.log('Initializing profile tabs...');
+
+            // Tab switching
+            const tabButtons = document.querySelectorAll('.tab-btn');
+            console.log('Found tab buttons:', tabButtons.length);
+
+            tabButtons.forEach(function(btn) {
+                console.log('Attaching listener to tab:', btn.dataset.tab);
+
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    console.log('Tab button clicked:', this.dataset.tab);
+
+                    // Remove active from all tabs and panes
+                    document.querySelectorAll('.tab-btn').forEach(function(b) {
+                        b.classList.remove('active');
+                    });
+                    document.querySelectorAll('.tab-pane').forEach(function(p) {
+                        p.classList.remove('active');
+                    });
+
+                    // Add active to clicked tab and corresponding pane
+                    this.classList.add('active');
+                    const targetPane = document.getElementById(this.dataset.tab);
+                    console.log('Target pane element:', targetPane);
+
+                    if (targetPane) {
+                        targetPane.classList.add('active');
+                        console.log('Successfully activated pane:', this.dataset.tab);
+                        console.log('Pane classes:', targetPane.className);
+                    } else {
+                        console.error('Could not find pane with ID:', this.dataset.tab);
+                    }
+                });
             });
-        });
 
-        // Toggle address form
+            // Check for flash attributes to switch to appropriate tab
+            const showPasswordTab = /*[[${showPasswordTab}]]*/ false;
+            const showAddressTab = /*[[${showAddressTab}]]*/ false;
+
+            if (showPasswordTab) {
+                console.log('Auto-switching to security tab');
+                const securityTab = document.querySelector('[data-tab="security"]');
+                if (securityTab) securityTab.click();
+            } else if (showAddressTab) {
+                console.log('Auto-switching to addresses tab');
+                const addressTab = document.querySelector('[data-tab="addresses"]');
+                if (addressTab) addressTab.click();
+            }
+
+            console.log('Profile tabs initialized successfully');
+        }, 100);
+
+        // Toggle address form (global function for onclick)
         function toggleAddressForm() {
             const form = document.getElementById('address-form');
-            form.classList.toggle('hidden');
-        }
-
-        // Check for flash attributes to switch to appropriate tab
-        const showPasswordTab = /*[[${showPasswordTab}]]*/ false;
-        const showAddressTab = /*[[${showAddressTab}]]*/ false;
-
-        if (showPasswordTab) {
-            document.querySelector('[data-tab="security"]').click();
-        } else if (showAddressTab) {
-            document.querySelector('[data-tab="addresses"]').click();
+            if (form) {
+                form.classList.toggle('hidden');
+                console.log('Address form toggled');
+            }
         }
     </script>
-    <div th:replace="~{fragments/footer :: scripts}"></div>
 </body>
 </html>
