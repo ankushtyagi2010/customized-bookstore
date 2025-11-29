@@ -1,0 +1,32 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Debug Spring Boot App",
+      "request": "launch",
+      "mainClass": "com.bookstore.BookstoreApplication",
+      "projectName": "customized-bookstore",
+      "env": {
+        "SPRING_PROFILES_ACTIVE": "dev",
+        "SPRING_DATA_MONGODB_URI": "mongodb://mongodb:27017/bookstore",
+        "APP_UPLOAD_DIR": "/app/uploads"
+      },
+      "vmArgs": "-Dspring.devtools.restart.enabled=true"
+    },
+    {
+      "type": "java",
+      "name": "Attach to Remote JVM",
+      "request": "attach",
+      "hostName": "localhost",
+      "port": 5005
+    },
+    {
+      "type": "java",
+      "name": "Run Current Test",
+      "request": "launch",
+      "mainClass": "${file}",
+      "projectName": "customized-bookstore"
+    }
+  ]
+}

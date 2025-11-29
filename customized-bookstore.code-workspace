@@ -1,0 +1,100 @@
+{
+    "folders": [
+        {
+            "name": "CustomBooks Project",
+            "path": "."
+        }
+    ],
+    "settings": {
+        // Workspace-specific Git settings
+        "git.enabled": true,
+        "git.autofetch": true,
+        "git.confirmSync": false,
+        "git.enableSmartCommit": true,
+
+        // Java settings
+        "java.configuration.updateBuildConfiguration": "automatic",
+        "java.compile.nullAnalysis.mode": "automatic",
+
+        // Spring Boot settings
+        "spring-boot.ls.problem.application-properties.enabled": true,
+
+        // Editor settings
+        "editor.formatOnSave": false,
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+
+        // Files settings
+        "files.autoSave": "afterDelay",
+        "files.autoSaveDelay": 1000,
+        "files.exclude": {
+            "**/.git": false,
+            "**/.DS_Store": true,
+            "**/target": false,
+            "**/.classpath": true,
+            "**/.project": true,
+            "**/.settings": true,
+            "**/.factorypath": true
+        }
+    },
+    "extensions": {
+        "recommendations": [
+            "vscjava.vscode-java-pack",
+            "vscjava.vscode-spring-boot-dashboard",
+            "vmware.vscode-spring-boot",
+            "eamodio.gitlens",
+            "mhutchie.git-graph"
+        ]
+    },
+    "launch": {
+        "version": "0.2.0",
+        "configurations": [
+            {
+                "type": "java",
+                "name": "Spring Boot-BookstoreApplication",
+                "request": "launch",
+                "cwd": "${workspaceFolder}",
+                "mainClass": "com.bookstore.BookstoreApplication",
+                "projectName": "customized-bookstore",
+                "args": "",
+                "envFile": "${workspaceFolder}/.env"
+            }
+        ]
+    },
+    "tasks": {
+        "version": "2.0.0",
+        "tasks": [
+            {
+                "label": "Maven: Clean Install",
+                "type": "shell",
+                "command": "mvn clean install -DskipTests",
+                "group": "build",
+                "problemMatcher": []
+            },
+            {
+                "label": "Maven: Spring Boot Run",
+                "type": "shell",
+                "command": "mvn spring-boot:run",
+                "group": {
+                    "kind": "build",
+                    "isDefault": true
+                },
+                "problemMatcher": []
+            },
+            {
+                "label": "Docker: Build and Run",
+                "type": "shell",
+                "command": "docker-compose up -d --build",
+                "group": "build",
+                "problemMatcher": []
+            },
+            {
+                "label": "Docker: Stop",
+                "type": "shell",
+                "command": "docker-compose down",
+                "group": "build",
+                "problemMatcher": []
+            }
+        ]
+    }
+}

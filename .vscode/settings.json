@@ -1,0 +1,56 @@
+{
+    // Java Settings
+    "java.compile.nullAnalysis.mode": "automatic",
+
+    // Git and Source Control Settings
+    "git.enabled": true,
+    "git.autofetch": true,
+    "git.autofetchPeriod": 180,
+    "git.confirmSync": false,
+    "git.enableSmartCommit": true,
+    "git.suggestSmartCommit": true,
+    "git.fetchOnPull": true,
+    "git.pruneOnFetch": true,
+    "git.showPushSuccessNotification": true,
+    "git.decorations.enabled": true,
+    "git.enableStatusBarSync": true,
+
+    // GitLens Settings (if extension is installed)
+    "gitlens.currentLine.enabled": true,
+    "gitlens.hovers.currentLine.over": "line",
+    "gitlens.codeLens.enabled": true,
+    "gitlens.codeLens.authors.enabled": true,
+    "gitlens.codeLens.recentChange.enabled": true,
+
+    // Source Control View
+    "scm.defaultViewMode": "tree",
+    "scm.alwaysShowProviders": true,
+    "scm.autoReveal": true,
+    "scm.diffDecorations": "all",
+    "scm.diffDecorationsGutterWidth": 3,
+
+    // File Explorer Git Decorations
+    "explorer.decorations.badges": true,
+    "explorer.decorations.colors": true,
+
+    // Editor Settings for Git
+    "editor.rulers": [120],
+    "editor.formatOnSave": false,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+
+    // Files to exclude from Source Control view
+    "files.exclude": {
+        "**/.git": false,
+        "**/.DS_Store": true,
+        "**/node_modules": true,
+        "**/target": false
+    },
+
+    // Search Settings
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/target": true,
+        "**/.git": true
+    }
+}

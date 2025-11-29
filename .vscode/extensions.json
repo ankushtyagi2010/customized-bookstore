@@ -1,0 +1,30 @@
+{
+    "recommendations": [
+        // Java Development
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-spring-boot-dashboard",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-maven",
+
+        // Git and Version Control
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "donjayamanne.githistory",
+
+        // Code Quality
+        "sonarsource.sonarlint-vscode",
+        "vscjava.vscode-java-dependency",
+
+        // Utilities
+        "redhat.vscode-yaml",
+        "redhat.vscode-xml",
+        "ms-vscode.live-server",
+        "streetsidesoftware.code-spell-checker",
+
+        // Markdown
+        "yzhang.markdown-all-in-one",
+
+        // Docker
+        "ms-azuretools.vscode-docker"
+    ]
+}

@@ -59,7 +59,15 @@ out/
 /.nb-gradle/
 
 # IDE - VS Code
-.vscode/
+# Allow sharing of settings, tasks, and launch configs
+# But ignore personal workspace state
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/README.md
+.vscode/*.code-workspace
 
 # OS generated files
 .DS_Store
