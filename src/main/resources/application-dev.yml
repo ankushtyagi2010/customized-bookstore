@@ -1,0 +1,50 @@
+# Development Profile Configuration (for devcontainer)
+spring:
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://mongodb:27017/bookstore}
+      database: bookstore
+
+  # Disable Thymeleaf caching for live reload
+  thymeleaf:
+    cache: false
+
+  # DevTools Configuration
+  devtools:
+    restart:
+      enabled: true
+      additional-paths:
+        - src/main/java
+        - src/main/resources
+    livereload:
+      enabled: true
+
+# Custom Application Properties for Development
+app:
+  upload:
+    dir: ${APP_UPLOAD_DIR:/app/uploads}
+    character-images: ${app.upload.dir}/characters
+    cover-images: ${app.upload.dir}/covers
+    user-uploads: ${app.upload.dir}/user-uploads
+    generated-pdfs: ${app.upload.dir}/pdfs
+
+# Enhanced Logging for Development
+logging:
+  level:
+    com.bookstore: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.data.mongodb: DEBUG
+    root: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# Actuator for development monitoring
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always

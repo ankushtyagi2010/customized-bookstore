@@ -1,0 +1,81 @@
+services:
+  # Development version of the app service
+  app-dev:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    container_name: customized-bookstore-dev
+    volumes:
+      # Mount the workspace
+      - ..:/workspace:cached
+      # Mount Maven cache for faster builds
+      - maven-cache:/home/vscode/.m2
+      # Mount upload directories
+      - bookstore-uploads:/app/uploads
+    ports:
+      - "8080:8080"
+      - "5005:5005"  # Debug port
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/bookstore
+      - APP_UPLOAD_DIR=/app/uploads
+      - SPRING_DEVTOOLS_RESTART_ENABLED=true
+      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - bookstore-network
+    command: sleep infinity
+    user: vscode
+
+  # MongoDB Database (from base compose file)
+  mongodb:
+    image: mongo:7.0
+    container_name: bookstore-mongodb-dev
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=bookstore
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+    networks:
+      - bookstore-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # MongoDB Express for database management
+  mongo-express:
+    image: mongo-express:latest
+    container_name: bookstore-mongo-express-dev
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin123
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - bookstore-network
+
+networks:
+  bookstore-network:
+    driver: bridge
+
+volumes:
+  maven-cache:
+    driver: local
+  mongodb-data:
+    driver: local
+  mongodb-config:
+    driver: local
+  bookstore-uploads:
+    driver: local

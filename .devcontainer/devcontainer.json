@@ -1,0 +1,60 @@
+{
+  "name": "Customized Bookstore Dev",
+  "dockerComposeFile": "docker-compose.devcontainer.yml",
+  "service": "app-dev",
+  "workspaceFolder": "/workspace",
+
+  "shutdownAction": "stopCompose",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-spring-boot",
+        "vscjava.vscode-spring-initializr",
+        "vscjava.vscode-spring-boot-dashboard",
+        "pivotal.vscode-boot-dev-pack",
+        "gabrielbb.vscode-lombok",
+        "mongodb.mongodb-vscode",
+        "redhat.vscode-xml",
+        "streetsidesoftware.code-spell-checker",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "java.configuration.runtimes": [
+          {
+            "name": "JavaSE-17",
+            "path": "/opt/java/openjdk"
+          }
+        ],
+        "java.jdt.ls.java.home": "/opt/java/openjdk",
+        "maven.executable.path": "/usr/bin/mvn",
+        "spring-boot.ls.java.home": "/opt/java/openjdk",
+        "files.exclude": {
+          "**/.classpath": true,
+          "**/.project": true,
+          "**/.settings": true,
+          "**/.factorypath": true
+        }
+      }
+    }
+  },
+
+  "forwardPorts": [8080, 27017, 8081],
+  "portsAttributes": {
+    "8080": {
+      "label": "Application",
+      "onAutoForward": "notify"
+    },
+    "27017": {
+      "label": "MongoDB"
+    },
+    "8081": {
+      "label": "Mongo Express"
+    }
+  },
+
+  "postCreateCommand": "mvn clean install -DskipTests",
+
+  "remoteUser": "vscode"
+}

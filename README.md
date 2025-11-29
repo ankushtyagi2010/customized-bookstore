@@ -77,6 +77,44 @@ docker-compose down -v
 docker-compose up -d --build
 ```
 
+## Development with VS Code Devcontainer
+
+For the best development experience, use VS Code with devcontainers. This provides a fully configured development environment with all dependencies pre-installed.
+
+### Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+### Getting Started
+
+1. Open the project in VS Code
+2. Press `F1` and select **Dev Containers: Reopen in Container**
+3. Wait for the container to build (first time takes a few minutes)
+4. Once loaded, you're ready to develop!
+
+### What's Included
+
+- Java 17 JDK with Maven
+- MongoDB 7.0 database
+- Pre-configured VS Code extensions (Java, Spring Boot, Lombok, MongoDB)
+- Debugging support (port 5005)
+- Hot reload with Spring DevTools
+- MongoDB Express (optional admin UI)
+
+### Development Workflow
+
+**Run the application:**
+- Press `F5` to debug
+- Or run: `mvn spring-boot:run`
+
+**Access services:**
+- Application: http://localhost:8080
+- MongoDB: mongodb://mongodb:27017
+- Mongo Express: http://localhost:8081 (if started)
+
+For more details, see [.devcontainer/README.md](.devcontainer/README.md)
+
 ## Installation & Setup
 
 1. **Clone the repository:**
