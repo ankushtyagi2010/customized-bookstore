@@ -452,6 +452,154 @@ The new components follow the existing dark theme:
 
 ---
 
+## Update: Phase 8 - VS Code Devcontainer Setup
+
+**Date:** November 29, 2025
+
+### Development Environment Enhancement
+
+Implemented a complete VS Code devcontainer setup to provide a consistent, zero-configuration development environment for all contributors.
+
+### Files Created
+
+**Devcontainer Configuration (4 new files):**
+- `.devcontainer/devcontainer.json` - VS Code devcontainer configuration
+- `.devcontainer/Dockerfile` - Custom development container
+- `.devcontainer/docker-compose.devcontainer.yml` - Development services
+- `.devcontainer/README.md` - Complete devcontainer documentation
+- `src/main/resources/application-dev.yml` - Development profile configuration
+
+### Features Implemented
+
+#### 1. Devcontainer Configuration
+
+**Container Setup:**
+- Base image: `mcr.microsoft.com/devcontainers/java:17`
+- Maven 3.9.6 installed
+- Development tools: git, curl, wget, vim, network utilities
+- User: `vscode` (non-root)
+- Workspace: `/workspace`
+
+**Services:**
+- `app-dev` - Development container with Java 17 and Maven
+- `mongodb` - MongoDB 7.0 database service
+- `mongo-express` - Optional admin UI (profile: admin)
+
+#### 2. Git Configuration
+
+**Credential Forwarding:**
+- Host `.gitconfig` mounted to container
+- Host `.ssh` directory mounted for SSH keys
+- SSH key permissions automatically fixed on startup
+- GitLens extension pre-installed
+
+**Git Features:**
+- Seamless git operations using host credentials
+- SSH authentication for GitHub/GitLab
+- Auto-fetch enabled
+- Smart commit enabled
+
+#### 3. VS Code Extensions
+
+Pre-installed extensions:
+- Java Extension Pack
+- Spring Boot Tools & Dashboard
+- Lombok Annotations Support
+- MongoDB for VS Code
+- GitLens
+- Code Spell Checker
+- XML Tools
+
+#### 4. Development Features
+
+**Hot Reload:**
+- Spring DevTools enabled
+- Thymeleaf cache disabled
+- Live reload on file changes
+
+**Port Forwarding:**
+- 8080 - Application
+- 5005 - Java Debug Port
+- 27017 - MongoDB
+- 8081 - Mongo Express
+
+**Auto-build:**
+- `mvn clean install -DskipTests` runs on container creation
+- Dependencies cached in persistent volume
+
+#### 5. Environment Variables
+
+Development profile (`application-dev.yml`):
+- `SPRING_PROFILES_ACTIVE=dev`
+- `SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/bookstore`
+- `APP_UPLOAD_DIR=/app/uploads`
+- Enhanced logging (DEBUG level for application packages)
+- Actuator endpoints enabled for monitoring
+
+### Documentation Updates
+
+Updated all project documentation with devcontainer information:
+
+**README.md:**
+- Added "Development with VS Code Devcontainer" section
+- Quick start guide
+- What's included
+- Development workflow
+
+**docs/CONTRIBUTING.md:**
+- Added devcontainer as recommended setup option
+- Step-by-step setup instructions
+- Benefits of using devcontainer
+
+**docs/SETUP.md:**
+- Added "Quick Start with VS Code Devcontainer" as primary option
+- Prerequisites and setup steps
+- What's included in devcontainer
+- Moved traditional setup to separate section
+
+**docs/CLAUDE.md:**
+- Added "Development Environment" section
+- Devcontainer files and structure
+- Features overview
+- Git integration details
+
+**docs/ARCHITECTURE.md:**
+- Added devcontainer to Technology Decisions table
+- Added "Development Environment Architecture" section
+- Container architecture diagram
+- Key features documentation
+
+**.devcontainer/README.md:**
+- Complete devcontainer documentation
+- Getting started guide
+- Services and features
+- Git configuration and verification
+- Development workflow
+- Troubleshooting guide
+
+### Benefits
+
+1. **Consistency:** All developers use identical environment
+2. **Zero Configuration:** No need to install Java, Maven, or MongoDB locally
+3. **Git Integration:** Seamless git operations with host credentials
+4. **Hot Reload:** Instant feedback on code changes
+5. **Debugging:** Pre-configured debug support
+6. **Database:** MongoDB pre-configured and ready to use
+7. **Extensions:** All necessary VS Code extensions pre-installed
+
+### Usage
+
+```bash
+# Quick start
+1. Open project in VS Code
+2. Press F1 → "Dev Containers: Reopen in Container"
+3. Wait for build (3-5 minutes first time)
+4. Press F5 to run with debugger
+```
+
+---
+
 *Initial development: November 22, 2025*
 *Dark theme update: November 23, 2025*
 *Phase 7 (Profile & Orders): November 23, 2025*
+*Phase 8 (Devcontainer Setup): November 29, 2025*

@@ -260,6 +260,58 @@ Access Control:
 | Image Processing | Thumbnailator | Simple API, good performance |
 | Authentication | Spring Security | Comprehensive security framework |
 | Build Tool | Maven | Widely adopted, good dependency management |
+| Development Environment | VS Code Devcontainer | Consistent environment, zero-config setup |
+| Containerization | Docker & Docker Compose | Simplified deployment and development |
+
+## Development Environment Architecture
+
+### VS Code Devcontainer
+
+The project includes a complete devcontainer setup for development:
+
+```
+.devcontainer/
+├── devcontainer.json              # VS Code configuration
+├── Dockerfile                     # Development container image
+├── docker-compose.devcontainer.yml # Development services
+└── README.md                      # Documentation
+```
+
+**Container Architecture:**
+```
+┌─────────────────────────────────────────────────────────────┐
+│                   Devcontainer Services                      │
+├─────────────────────────────────────────────────────────────┤
+│  ┌────────────────────────────────────────────────────┐     │
+│  │  app-dev (Development Container)                   │     │
+│  │  ├─ Java 17 JDK                                    │     │
+│  │  ├─ Maven 3.9.6                                    │     │
+│  │  ├─ VS Code Server with Extensions                │     │
+│  │  ├─ Git with credential forwarding                │     │
+│  │  └─ Spring DevTools (Hot Reload)                  │     │
+│  └────────────────────────────────────────────────────┘     │
+│                          │                                   │
+│  ┌────────────────────────────────────────────────────┐     │
+│  │  mongodb (Database Service)                        │     │
+│  │  ├─ MongoDB 7.0                                    │     │
+│  │  ├─ Persistent volume                             │     │
+│  │  └─ Health checks                                 │     │
+│  └────────────────────────────────────────────────────┘     │
+│                          │                                   │
+│  ┌────────────────────────────────────────────────────┐     │
+│  │  mongo-express (Optional Admin UI)                 │     │
+│  │  └─ Web interface on port 8081                    │     │
+│  └────────────────────────────────────────────────────┘     │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Key Features:**
+- **Workspace Mounting:** Project files mounted from host to `/workspace`
+- **Git Integration:** `.gitconfig` and `.ssh` mounted for seamless git operations
+- **Volume Persistence:** Maven cache (`~/.m2`) persisted across rebuilds
+- **Port Forwarding:** 8080 (app), 27017 (MongoDB), 8081 (Mongo Express), 5005 (debug)
+- **VS Code Extensions:** Java, Spring Boot, Lombok, MongoDB, GitLens pre-installed
+- **Auto-build:** `mvn clean install -DskipTests` runs on container creation
 
 ## UI/Theme Architecture
 

@@ -39,14 +39,53 @@ By participating in this project, you agree to maintain a respectful and inclusi
 
 ## Development Setup
 
-### Prerequisites
+### Option 1: VS Code Devcontainer (Recommended)
+
+The easiest way to get started is with VS Code devcontainers. This provides a fully configured development environment.
+
+**Prerequisites:**
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [VS Code](https://code.visualstudio.com/)
+- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+**Setup:**
+1. Clone your fork:
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/customized-bookstore.git
+   cd customized-bookstore
+   ```
+
+2. Open in VS Code:
+   ```bash
+   code .
+   ```
+
+3. Press `F1` → **Dev Containers: Reopen in Container**
+
+4. Wait for the container to build (first time takes a few minutes)
+
+5. Start coding! All dependencies, MongoDB, and tools are pre-configured.
+
+**Benefits:**
+- Consistent development environment for all contributors
+- No need to install Java, Maven, or MongoDB locally
+- Git credentials automatically forwarded from host
+- Pre-configured VS Code extensions
+- Hot reload with Spring DevTools
+
+See [.devcontainer/README.md](../.devcontainer/README.md) for details.
+
+### Option 2: Local Setup
+
+If you prefer to develop locally without containers:
+
+**Prerequisites:**
 - Java 17+
 - Maven 3.6+
 - MongoDB 4.4+
 - Git
 
-### Local Setup
-
+**Setup:**
 ```bash
 # Clone your fork
 git clone https://github.com/YOUR_USERNAME/customized-bookstore.git

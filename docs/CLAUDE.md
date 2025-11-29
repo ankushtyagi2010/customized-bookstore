@@ -109,15 +109,53 @@ The application uses a **dark theme** with the following CSS variables:
 - Focus states show glowing borders with primary color
 - Smooth transitions using `cubic-bezier(0.4, 0, 0.2, 1)`
 
+## Development Environment
+
+### VS Code Devcontainer (Recommended)
+
+The project includes a complete devcontainer setup for consistent development environments:
+
+**Location:** `.devcontainer/`
+
+**Files:**
+- `devcontainer.json` - VS Code devcontainer configuration
+- `Dockerfile` - Custom development container
+- `docker-compose.devcontainer.yml` - Services for development
+- `README.md` - Complete devcontainer documentation
+
+**Features:**
+- Java 17 with Maven pre-installed
+- MongoDB 7.0 database service
+- Git credential forwarding from host
+- Pre-configured VS Code extensions
+- Hot reload with Spring DevTools
+- Debug support on port 5005
+
+**Quick Start:**
+1. Open project in VS Code
+2. Press `F1` → **Dev Containers: Reopen in Container**
+3. Wait for build (3-5 minutes first time)
+4. Press `F5` to run with debugger
+
+**Git in Devcontainer:**
+- Your host `.gitconfig` is automatically mounted
+- SSH keys from `~/.ssh` are available for GitHub/GitLab
+- GitLens extension pre-installed
+- All git operations work seamlessly
+
 ## Common Tasks
 
 ### Running Locally
 
 ```bash
-# With Maven
+# In Devcontainer (Recommended)
+# Press F5 in VS Code
+# Or run: mvn spring-boot:run
+
+# With Maven (Local)
 mvn spring-boot:run
 
-# With Docker
+# With Docker Compose (Production)
 docker-compose up -d --build
 ```
 

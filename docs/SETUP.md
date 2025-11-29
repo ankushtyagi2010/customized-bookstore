@@ -2,6 +2,61 @@
 
 This guide provides detailed instructions for setting up the CustomBooks application in different environments.
 
+## Quick Start with VS Code Devcontainer (Recommended)
+
+The fastest and most reliable way to get started is using VS Code devcontainers. This provides a fully configured development environment with zero configuration needed.
+
+### Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+- [Visual Studio Code](https://code.visualstudio.com/)
+- [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
+### Setup Steps
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/customized-bookstore.git
+   cd customized-bookstore
+   ```
+
+2. **Open in VS Code:**
+   ```bash
+   code .
+   ```
+
+3. **Start devcontainer:**
+   - Press `F1`
+   - Select **Dev Containers: Reopen in Container**
+   - Wait for container to build (3-5 minutes first time)
+
+4. **You're ready!** The application will auto-build. To run:
+   - Press `F5` to debug
+   - Or run: `mvn spring-boot:run`
+
+5. **Access services:**
+   - Application: http://localhost:8080
+   - MongoDB: mongodb://mongodb:27017
+   - Mongo Express: http://localhost:8081 (optional)
+
+### What's Included in Devcontainer
+
+- ✅ Java 17 JDK with Maven
+- ✅ MongoDB 7.0 database
+- ✅ All VS Code extensions (Java, Spring Boot, Lombok, MongoDB, GitLens)
+- ✅ Git configuration with credential forwarding
+- ✅ Debugging pre-configured
+- ✅ Hot reload with Spring DevTools
+- ✅ MongoDB Express admin UI (optional)
+
+For complete devcontainer documentation, see [.devcontainer/README.md](../.devcontainer/README.md)
+
+---
+
+## Traditional Setup (Without Devcontainer)
+
+If you prefer to set up the development environment manually:
+
 ## Prerequisites
 
 ### Required Software
