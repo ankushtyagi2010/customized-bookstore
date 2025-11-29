@@ -217,21 +217,41 @@
     <div th:replace="~{fragments/footer :: scripts}"></div>
 
     <script>
-        console.log('Profile tab script loading...');
+        // Toggle address form (global function for onclick)
+        function toggleAddressForm() {
+            const form = document.getElementById('address-form');
+            if (form) {
+                form.classList.toggle('hidden');
+                console.log('Address form toggled');
+            }
+        }
 
-        // Wait a tiny bit to ensure everything is ready
-        setTimeout(function() {
+        // Initialize tabs when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initProfileTabs);
+        } else {
+            // DOM is already ready
+            initProfileTabs();
+        }
+
+        function initProfileTabs() {
             console.log('Initializing profile tabs...');
 
             // Tab switching
             const tabButtons = document.querySelectorAll('.tab-btn');
             console.log('Found tab buttons:', tabButtons.length);
 
+            if (tabButtons.length === 0) {
+                console.error('No tab buttons found!');
+                return;
+            }
+
             tabButtons.forEach(function(btn) {
                 console.log('Attaching listener to tab:', btn.dataset.tab);
 
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
+                    e.stopPropagation();
                     console.log('Tab button clicked:', this.dataset.tab);
 
                     // Remove active from all tabs and panes
@@ -272,15 +292,6 @@
             }
 
             console.log('Profile tabs initialized successfully');
-        }, 100);
-
-        // Toggle address form (global function for onclick)
-        function toggleAddressForm() {
-            const form = document.getElementById('address-form');
-            if (form) {
-                form.classList.toggle('hidden');
-                console.log('Address form toggled');
-            }
         }
     </script>
 </body>

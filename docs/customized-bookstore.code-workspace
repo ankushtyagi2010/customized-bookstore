@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "customized-bookstore",
+			"path": ".."
+		},
+		{
+			"name": ".devcontainer",
+			"path": "C:/Users/ankus/Downloads/claude-code-main/claude-code-main/.devcontainer"
+		}
+	],
+	"settings": {}
+}
