@@ -20,7 +20,9 @@ This devcontainer configuration provides a complete development environment for 
 ### Services
 
 - **Java 17 Development Environment** - Full JDK with Maven
-- **MongoDB 7.0** - Database service
+- **MongoDB 7.0** - Dual setup for flexibility:
+  - **Local MongoDB** - Installed in devcontainer, auto-starts on container start
+  - **Docker Compose Service** - Optional external MongoDB container
 - **Mongo Express** - Database management UI (optional)
 
 ### VS Code Extensions
@@ -118,13 +120,17 @@ Or use VS Code task: `Build with Maven`
 
 ### Database Access
 
-**MongoDB Connection String (from within container):**
-```
-mongodb://mongodb:27017/bookstore
-```
+**MongoDB Auto-Start:**
+The devcontainer automatically starts a local MongoDB instance on container startup. No manual configuration needed!
+
+**MongoDB Connection:**
+- **Local MongoDB (default):** `mongodb://localhost:27017/bookstore`
+- **Docker Service (if using docker-compose):** `mongodb://mongodb:27017/bookstore`
+
+The startup script automatically detects and uses the appropriate MongoDB instance.
 
 **Mongo Express (Web UI):**
-1. Start services with admin profile:
+1. Start services with docker-compose:
    ```bash
    docker-compose --profile admin up -d mongo-express
    ```
@@ -133,7 +139,8 @@ mongodb://mongodb:27017/bookstore
 
 **Using MongoDB VS Code Extension:**
 - The extension is pre-installed
-- Connect using: `mongodb://mongodb:27017`
+- Connect using: `mongodb://localhost:27017` (local)
+- Or: `mongodb://mongodb:27017` (docker service)
 
 ## Project Structure
 
@@ -170,6 +177,26 @@ mvn versions:display-dependency-updates
 - Try rebuilding: `F1` → **Dev Containers: Rebuild Container**
 
 ### MongoDB Connection Issues
+
+**Check MongoDB Status:**
+```bash
+# Check if local MongoDB is running
+mongosh --eval "db.adminCommand('ping')"
+
+# Check MongoDB process
+ps aux | grep mongod
+```
+
+**Start MongoDB Manually (if needed):**
+```bash
+# The startup script should handle this automatically
+/usr/local/bin/start-mongodb.sh
+
+# Or start manually
+sudo -u mongodb mongod --dbpath /data/db --logpath /var/log/mongodb/mongod.log --fork --bind_ip_all
+```
+
+**Docker Compose MongoDB (alternative):**
 - Verify MongoDB is running: `docker ps`
 - Check MongoDB health: `docker-compose ps`
 - View MongoDB logs: `docker-compose logs mongodb`
@@ -213,10 +240,17 @@ git config --list
 The following environment variables are pre-configured:
 
 - `SPRING_PROFILES_ACTIVE=dev`
-- `SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/bookstore`
+- `SPRING_DATA_MONGODB_URI` - Auto-configured by startup script:
+  - `mongodb://localhost:27017/bookstore` (local MongoDB)
+  - `mongodb://mongodb:27017/bookstore` (docker-compose service)
 - `APP_UPLOAD_DIR=/app/uploads`
 - `SPRING_DEVTOOLS_RESTART_ENABLED=true`
 - `JAVA_TOOL_OPTIONS` - Configured for remote debugging on port 5005
+
+**Note:** When running the application manually, set MongoDB URI if needed:
+```bash
+SPRING_DATA_MONGODB_URI=mongodb://localhost:27017/bookstore mvn spring-boot:run
+```
 
 ## Additional Resources
 

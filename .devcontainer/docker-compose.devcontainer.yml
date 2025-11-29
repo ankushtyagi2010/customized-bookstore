@@ -4,12 +4,21 @@ services:
     build:
       context: ..
       dockerfile: .devcontainer/Dockerfile
+      args:
+        TZ: "${TZ:-America/Los_Angeles}"
+        CLAUDE_CODE_VERSION: "latest"
+        GIT_DELTA_VERSION: "0.18.2"
+        ZSH_IN_DOCKER_VERSION: "1.2.0"
     container_name: customized-bookstore-dev
+    # Temporarily disabled - will re-enable when firewall is working
+    # cap_add:
+    #   - NET_ADMIN
+    #   - NET_RAW
     volumes:
       # Mount the workspace
       - ..:/workspace:cached
       # Mount Maven cache for faster builds
-      - maven-cache:/home/vscode/.m2
+      - maven-cache:/home/node/.m2
       # Mount upload directories
       - bookstore-uploads:/app/uploads
     ports:
@@ -27,7 +36,7 @@ services:
     networks:
       - bookstore-network
     command: sleep infinity
-    user: vscode
+    user: node
 
   # MongoDB Database (from base compose file)
   mongodb:
