@@ -40,6 +40,34 @@ This devcontainer configuration provides a complete development environment for 
 - `27017` - MongoDB
 - `8081` - Mongo Express (run with `--profile admin`)
 
+### Git Configuration
+
+Git is automatically configured to use your host machine's credentials:
+
+- **Git Config** - Your `~/.gitconfig` is mounted from the host
+- **SSH Keys** - Your `~/.ssh` directory is mounted for git operations
+- **GitLens** - Pre-installed for enhanced git visualization
+- **Auto-fetch** - Enabled for staying up to date with remote changes
+
+**What this means:**
+- Your git identity (name and email) works automatically
+- SSH keys for GitHub/GitLab work without additional setup
+- Git authentication is seamless
+- All your git aliases and configurations are available
+
+**Verifying Git Setup:**
+```bash
+# Check git configuration
+git config --list
+
+# Test SSH connection to GitHub
+ssh -T git@github.com
+
+# Your credentials should work for all git operations
+git pull
+git push
+```
+
 ## Development Workflow
 
 ### Running the Application
@@ -145,6 +173,27 @@ mvn versions:display-dependency-updates
 - Check internet connection
 - Clear Maven cache: `rm -rf /home/vscode/.m2/repository`
 - Rebuild container
+
+### Git Issues
+
+**SSH Key Permission Errors:**
+```bash
+# Fix SSH key permissions manually if needed
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/id_rsa ~/.ssh/id_ed25519
+```
+
+**Git Config Not Found:**
+- Ensure you have a `.gitconfig` file in your host home directory
+- Run on host: `git config --global user.name "Your Name"`
+- Run on host: `git config --global user.email "your@email.com"`
+- Rebuild the container
+
+**SSH Authentication Failed:**
+- Verify SSH keys exist on host: `ls -la ~/.ssh`
+- Test SSH agent on host: `ssh-add -l`
+- Ensure your public key is added to GitHub/GitLab
+- Rebuild container after adding keys
 
 ## Environment Variables
 

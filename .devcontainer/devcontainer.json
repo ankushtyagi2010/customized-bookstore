@@ -6,6 +6,20 @@
 
   "shutdownAction": "stopCompose",
 
+  // Mount host git config and SSH keys for seamless git operations
+  "mounts": [
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+  ],
+
+  // Features to add
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest",
+      "ppa": false
+    }
+  },
+
   "customizations": {
     "vscode": {
       "extensions": [
@@ -35,7 +49,14 @@
           "**/.project": true,
           "**/.settings": true,
           "**/.factorypath": true
-        }
+        },
+        // Git configuration
+        "git.enabled": true,
+        "git.autofetch": true,
+        "git.confirmSync": false,
+        "git.enableSmartCommit": true,
+        "git.postCommitCommand": "none",
+        "terminal.integrated.defaultProfile.linux": "bash"
       }
     }
   },
@@ -55,6 +76,9 @@
   },
 
   "postCreateCommand": "mvn clean install -DskipTests",
+
+  // Fix SSH key permissions after container starts
+  "postStartCommand": "sh -c 'if [ -d ~/.ssh ]; then chmod 700 ~/.ssh && chmod 600 ~/.ssh/* 2>/dev/null || true; fi'",
 
   "remoteUser": "vscode"
 }

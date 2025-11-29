@@ -97,7 +97,8 @@ For the best development experience, use VS Code with devcontainers. This provid
 
 - Java 17 JDK with Maven
 - MongoDB 7.0 database
-- Pre-configured VS Code extensions (Java, Spring Boot, Lombok, MongoDB)
+- Pre-configured VS Code extensions (Java, Spring Boot, Lombok, MongoDB, GitLens)
+- Git configuration with automatic credential forwarding from host
 - Debugging support (port 5005)
 - Hot reload with Spring DevTools
 - MongoDB Express (optional admin UI)
