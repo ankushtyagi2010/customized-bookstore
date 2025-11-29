@@ -42,18 +42,27 @@ This devcontainer configuration provides a complete development environment for 
 
 ### Git Configuration
 
-Git is automatically configured to use your host machine's credentials:
+Git is configured to work seamlessly with your host machine's credentials:
 
-- **Git Config** - Your `~/.gitconfig` is mounted from the host
 - **SSH Keys** - Your `~/.ssh` directory is mounted for git operations
+- **Credential Helper** - Automatically configured to store credentials
 - **GitLens** - Pre-installed for enhanced git visualization
 - **Auto-fetch** - Enabled for staying up to date with remote changes
 
+**First-Time Setup:**
+
+When you first open the devcontainer, configure your git identity:
+
+```bash
+# Set your git identity (required on first use)
+git config --global user.name "Your Name"
+git config --global user.email "your.email@example.com"
+```
+
 **What this means:**
-- Your git identity (name and email) works automatically
 - SSH keys for GitHub/GitLab work without additional setup
-- Git authentication is seamless
-- All your git aliases and configurations are available
+- Git credentials are stored securely within the container
+- Once configured, git operations work seamlessly
 
 **Verifying Git Setup:**
 ```bash
@@ -183,11 +192,15 @@ chmod 700 ~/.ssh
 chmod 600 ~/.ssh/id_rsa ~/.ssh/id_ed25519
 ```
 
-**Git Config Not Found:**
-- Ensure you have a `.gitconfig` file in your host home directory
-- Run on host: `git config --global user.name "Your Name"`
-- Run on host: `git config --global user.email "your@email.com"`
-- Rebuild the container
+**Git Config Issues:**
+```bash
+# If you see git config warnings or errors, configure git in the container:
+git config --global user.name "Your Name"
+git config --global user.email "your@email.com"
+
+# Verify configuration
+git config --list
+```
 
 **SSH Authentication Failed:**
 - Verify SSH keys exist on host: `ls -la ~/.ssh`

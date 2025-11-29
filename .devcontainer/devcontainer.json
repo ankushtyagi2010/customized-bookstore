@@ -6,10 +6,9 @@
 
   "shutdownAction": "stopCompose",
 
-  // Mount host git config and SSH keys for seamless git operations
+  // Mount host SSH keys for seamless git operations
   "mounts": [
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig,target=/home/vscode/.gitconfig,type=bind,consistency=cached",
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
   ],
 
   // Features to add
@@ -17,7 +16,13 @@
     "ghcr.io/devcontainers/features/git:1": {
       "version": "latest",
       "ppa": false
-    }
+    },
+    "ghcr.io/devcontainers/features/git-lfs:1": {}
+  },
+
+  // Configure git to use host credentials
+  "containerEnv": {
+    "GIT_EDITOR": "code --wait"
   },
 
   "customizations": {
@@ -75,10 +80,14 @@
     }
   },
 
-  "postCreateCommand": "mvn clean install -DskipTests",
+  // Run after container is created for the first time
+  "postCreateCommand": "bash -c 'mvn clean install -DskipTests && git config --global --add safe.directory /workspace'",
 
-  // Fix SSH key permissions after container starts
-  "postStartCommand": "sh -c 'if [ -d ~/.ssh ]; then chmod 700 ~/.ssh && chmod 600 ~/.ssh/* 2>/dev/null || true; fi'",
+  // Fix SSH key permissions and configure git credentials after container starts
+  "postStartCommand": "bash -c 'if [ -d ~/.ssh ]; then chmod 700 ~/.ssh && chmod 600 ~/.ssh/* 2>/dev/null || true; fi && git config --global credential.helper store'",
+
+  // Run when attaching to an existing container
+  "postAttachCommand": "git config --global --add safe.directory /workspace",
 
   "remoteUser": "vscode"
 }
